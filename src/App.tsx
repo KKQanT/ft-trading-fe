@@ -5,18 +5,9 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import Navbar from './components/Navber/Navbar';
+
 import "@solana/wallet-adapter-react-ui/styles.css"
-
-function App() {
-
-  return (
-    <WalleAdapterContext>
-      <div className='App'>
-        <WalletMultiButton/>
-      </div>
-    </WalleAdapterContext>
-  )
-}
 
 const WalleAdapterContext: FC<{ children: ReactNode }> = (
   { children }: { children: ReactNode }
@@ -39,6 +30,15 @@ const WalleAdapterContext: FC<{ children: ReactNode }> = (
         </WalletProvider>
     </ConnectionProvider>
 );
+}
+
+function App() {
+
+  return (
+    <WalleAdapterContext>
+      <Navbar/>
+    </WalleAdapterContext>
+  )
 }
 
 export default App
