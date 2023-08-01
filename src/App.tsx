@@ -6,6 +6,8 @@ import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Navbar from './components/Navber/Navbar';
+import { Routes, Route } from "react-router-dom";
+import Home from './components/Home/Home';
 
 import "@solana/wallet-adapter-react-ui/styles.css"
 
@@ -25,18 +27,21 @@ const WalleAdapterContext: FC<{ children: ReactNode }> = (
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-            <WalletModalProvider>{children}</WalletModalProvider>
-        </WalletProvider>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>{children}</WalletModalProvider>
+      </WalletProvider>
     </ConnectionProvider>
-);
+  );
 }
 
 function App() {
 
   return (
     <WalleAdapterContext>
-      <Navbar/>
+      <Navbar />
+      <Routes>
+        <Route index element={<Home />} />
+      </Routes>
     </WalleAdapterContext>
   )
 }
