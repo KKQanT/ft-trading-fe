@@ -1,13 +1,14 @@
-import { ReactNode, useMemo, FC, useEffect } from 'react'
+import { ReactNode, useMemo, FC } from 'react'
 import './App.css'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
 import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import Navbar from './components/Navber/Navbar';
 import { Routes, Route } from "react-router-dom";
 import Home from './components/Home/Home';
+import TradingPage from './components/Trade/TradePage';
 
 import "@solana/wallet-adapter-react-ui/styles.css"
 
@@ -41,6 +42,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route index element={<Home />} />
+        <Route path="trade" element={<TradingPage />} />
       </Routes>
     </WalleAdapterContext>
   )

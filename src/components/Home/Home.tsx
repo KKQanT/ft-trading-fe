@@ -5,9 +5,6 @@ import {
   Text,
   Button,
   Stack,
-  Icon,
-  useColorModeValue,
-  createIcon,
 } from '@chakra-ui/react'
 
 export default function Home() {
@@ -24,7 +21,7 @@ export default function Home() {
             fontSize={{ base: '3xl', sm: '4xl', md: '5xl' }}
             lineHeight={'110%'}>
             Welcome to  <br />
-            <Text as={'span'} color={'green.400'}>
+            <Text as={'span'} color={'orange.400'}>
               Solana Stock Trading Platform
             </Text>
           </Heading>
@@ -41,11 +38,11 @@ export default function Home() {
             position={'relative'}>
             <Button
               colorScheme={'green'}
-              bg={'green.400'}
+              bg={'orange.400'}
               rounded={'full'}
               px={6}
               _hover={{
-                bg: 'green.500',
+                bg: 'orange.600',
               }}>
               Trade
             </Button>

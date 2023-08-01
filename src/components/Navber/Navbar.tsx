@@ -22,7 +22,9 @@ const walletButtonStyle: CSS.Properties = {
   backgroundColor: "black",
   color: 'white',
   width: "155px",
-  fontSize: "medium"
+  height: "45px",
+  fontSize: "medium",
+  borderRadius: "25px"
 };
 
 
