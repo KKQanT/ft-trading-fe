@@ -9,6 +9,7 @@ import Navbar from './components/Navber/Navbar';
 import { Routes, Route } from "react-router-dom";
 import Home from './components/Home/Home';
 import TradingPage from './components/Trade/TradePage';
+import InvestorSection from './components/Investor/InvestorSection';
 
 import "@solana/wallet-adapter-react-ui/styles.css"
 
@@ -43,6 +44,7 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="trade" element={<TradingPage />} />
+        <Route path='investor' element={<InvestorSection/>}/>
       </Routes>
     </WalleAdapterContext>
   )
