@@ -1,9 +1,5 @@
 import {
   Heading,
-  Stack,
-  Text,
-  Box,
-  StackDivider,
   Center,
   Spacer,
   TableContainer,
@@ -106,7 +102,7 @@ const TokenListCard = () => {
         </CardHeader>
         <CardBody>
           <TableContainer>
-            <Table variant={"striped"} colorScheme={"facebook"}>
+            <Table variant={"striped"} colorScheme={"orange"}>
               <Thead>
                 <Tr>
                   <Th>Token Name</Th>

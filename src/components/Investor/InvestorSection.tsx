@@ -1,6 +1,7 @@
 import { Container, Heading, Stack, Text } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import NFTList from "./NFTList";
+import RewardList from "./RewardList";
 
 const InvestorSection = () => {
 
@@ -31,7 +32,7 @@ const InvestorSection = () => {
               <NFTList />
             </TabPanel>
             <TabPanel>
-              <p>two!</p>
+              <RewardList/>
             </TabPanel>
           </TabPanels>
 
