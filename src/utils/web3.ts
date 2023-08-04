@@ -19,3 +19,9 @@ export async function checkAssociatedTokenAccount(
     return true
   }
 }
+
+export const getSolanaTime = async (connection: Connection) => {
+  const slot = await connection.getSlot();
+  const nowTs = await connection.getBlockTime(slot);
+  return nowTs
+}
