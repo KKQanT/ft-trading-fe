@@ -1,6 +1,6 @@
 import * as anchor from '@project-serum/anchor';
 import { S3T_TRADE_PROGRAM_ID } from './program';
-import { FtTrading } from "./types";
+import { FtTrading } from "./program_types";
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import {
   getAssociatedTokenAddress,
