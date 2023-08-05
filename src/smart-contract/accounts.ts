@@ -25,11 +25,12 @@ export const getDividendVaultInfoByEpoch = async (
 
   const accountInfo = await connection.getAccountInfo(dividendVault);
   const decodedData = dividendVaultSchema.decode(accountInfo?.data);
+  console.log(decodedData)
   return {
     address: dividendVault.toBase58(),
     epoch: decodedData.epoch.toNumber(),
-    solDividendAmount: decodedData.epoch.lamport_dividend_amount / LAMPORTS_PER_SOL,
-    totalShare: decodedData.total_share
+    solDividendAmount: decodedData.lamport_dividend_amount.toNumber() / LAMPORTS_PER_SOL,
+    totalShare: decodedData.total_share.toNumber()
   } as DividendVaultType
 }
 

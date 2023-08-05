@@ -25,3 +25,6 @@ export const getSolanaTime = async (connection: Connection) => {
   const nowTs = await connection.getBlockTime(slot);
   return nowTs
 }
+
+export const START_TS = 1691217723;
+export const EPOCH_DURATION = 86400

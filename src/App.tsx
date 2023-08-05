@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, FC } from 'react'
+import { ReactNode, useMemo, FC, useState, useEffect } from 'react'
 import './App.css'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
@@ -10,6 +10,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from './components/Home/Home';
 import TradingPage from './components/Trade/TradePage';
 import InvestorSection from './components/Investor/InvestorSection';
+import AdminPage from './components/Admin';
 
 import "@solana/wallet-adapter-react-ui/styles.css"
 
@@ -37,14 +38,14 @@ const WalleAdapterContext: FC<{ children: ReactNode }> = (
 }
 
 function App() {
-
   return (
     <WalleAdapterContext>
       <Navbar />
       <Routes>
         <Route index element={<Home />} />
         <Route path="trade" element={<TradingPage />} />
-        <Route path='investor' element={<InvestorSection/>}/>
+        <Route path='investor' element={<InvestorSection />} />
+        <Route path='admin' element={<AdminPage/>} />
       </Routes>
     </WalleAdapterContext>
   )
