@@ -18,20 +18,20 @@ interface PreprocessedWlTokenDataType {
 
 const NFTList = () => {
 
-  const { holderTokens, connection } = useWeb3();
+  const { userTokens, connection } = useWeb3();
   const { allDividendVaultInfos, allWhiteListedTokenInfo } = useProgramData();
   const [preprocessedTokensData, setPreprocessedTokensData] = useState<PreprocessedWlTokenDataType[]>([]);
 
   useEffect(() => {
     preprocessTokensData();
-  }, [holderTokens, allWhiteListedTokenInfo])
+  }, [userTokens, allWhiteListedTokenInfo])
 
   const preprocessTokensData = async () => {
-    const holderTokensAddress = holderTokens
+    const userTokensAddress = userTokens
       .map((item) => { return item.mintAddress });
 
     const filteredWlTokensInfo = allWhiteListedTokenInfo
-      .filter((item) => holderTokensAddress.includes(item.tokenAddress));
+      .filter((item) => userTokensAddress.includes(item.tokenAddress));
 
     const userWlToken: PreprocessedWlTokenDataType[] = [];
     const solanaCurrTime = await getSolanaTime(connection);

@@ -36,7 +36,7 @@ function App() {
 function WrappedApp() {
   const wallet = useAnchorWallet();
 
-  const { connection, program, setProgram, setHolderTokens } = useWeb3()
+  const { connection, program, setProgram, setUserTokens } = useWeb3()
   const {
     setAllWhiteListedTokenInfo, 
     setAllDividendVaultInfos
@@ -65,7 +65,7 @@ function WrappedApp() {
         wallet.publicKey.toBase58(), connection
       ).then((dataArr) => {
         const filteredDataArr = dataArr.filter((item) => item.tokenBalance > 0)
-        setHolderTokens(filteredDataArr)
+        setUserTokens(filteredDataArr)
       }).catch((err) => { console.log(err) })
     }
   }, [wallet?.publicKey])

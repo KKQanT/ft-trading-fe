@@ -7,8 +7,8 @@ interface UseWeb3 {
   connection: Connection,
   program: anchor.Program<anchor.Idl> | null,
   setProgram: (val: anchor.Program<anchor.Idl>) => void,
-  holderTokens: UserTokenType[],
-  setHolderTokens: (dataArr: UserTokenType[]) => void
+  userTokens: UserTokenType[],
+  setUserTokens: (dataArr: UserTokenType[]) => void
 }
 
 const RPC = import.meta.env.VITE_REACR_APP_RPC
@@ -22,10 +22,10 @@ export const useWeb3 = create<UseWeb3>((set) => (
         program: val
       })
     },
-    holderTokens: [],
-    setHolderTokens: (dataArr: UserTokenType[]) => {
+    userTokens: [],
+    setUserTokens: (dataArr: UserTokenType[]) => {
       set({
-        holderTokens: dataArr
+        userTokens: dataArr
       })
     }
   }

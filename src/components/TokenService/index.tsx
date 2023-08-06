@@ -26,6 +26,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { createMintTokenTransaction } from '../../utils/web3';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import shortenHash from '../../utils';
+import { useWeb3 } from '../../stores/useWeb3';
+import { useProgramData } from '../../stores/useProgramData';
 
 export default function TokenService() {
 
@@ -38,12 +40,7 @@ export default function TokenService() {
   const [tokenImageUri, setTokenImageUri] = useState<string>('public/solana-sol-logo-12828AD23D-seeklogo.com.png');
   const [signature, setSignature] = useState<string>("");
 
-  const RPC = import.meta.env.VITE_REACR_APP_RPC
-
-  const connection = useMemo(
-    () => new Connection(RPC),
-    []
-  );
+  const {connection, userTokens} = useWeb3();
 
   const wallet = useAnchorWallet();
 

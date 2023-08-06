@@ -1,4 +1,4 @@
-export default function shortenHash(s: string) {
+export default function shortenHash(s: string, slice: number = 5) {
     const N = s.length;
-    return s.slice(0, 5) + "..." + s.slice(N-5,N)
+    return s.slice(0, slice) + "..." + s.slice(N-slice,N)
 }

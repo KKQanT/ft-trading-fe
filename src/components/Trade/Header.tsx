@@ -3,11 +3,21 @@ import {
   Stack,
   Text,
   Button,
+  useDisclosure,
 } from '@chakra-ui/react'
+import ListTokenModal from './ListTokenModal';
 
 const TradePageHeader = () => {
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
+      <ListTokenModal
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+      />
       <Heading
         fontWeight={600}
         fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
@@ -28,7 +38,9 @@ const TradePageHeader = () => {
           px={6}
           colorScheme={'orange'}
           bg={'orange.400'}
-          _hover={{ bg: 'orange.500' }}>
+          _hover={{ bg: 'orange.500' }}
+          onClick={onOpen}
+        >
           List Your Token
         </Button>
         <Button rounded={'full'} px={6}>
@@ -38,5 +50,6 @@ const TradePageHeader = () => {
     </>
   )
 }
+
 
 export default TradePageHeader
