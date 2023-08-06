@@ -16,12 +16,12 @@ import {
 } from '@chakra-ui/react'
 import { ReactElement } from 'react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { Connection, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { EPOCH_DURATION, START_TS, getSolanaTime } from '../../utils/web3';
 import * as anchor from '@project-serum/anchor';
 import { FtTrading, IDL } from '../../smart-contract/program_types';
 import { S3T_TRADE_PROGRAM_ID } from '../../smart-contract/program';
-import { createCreateDividendVaultInstruction } from '../../smart-contract/intructions';
+import { createAddWhitelistNftIntruction, createCreateDividendVaultInstruction } from '../../smart-contract/intructions';
 import { DividendVaultType, getDividendVaultInfoByEpoch } from '../../smart-contract/accounts';
 
 interface FeatureProps {
@@ -57,6 +57,7 @@ export default function AdminPage() {
   const [startEpoch, setStartEpoch] = useState<number>(0);
   const [endEpoch, setEndEpoch] = useState<number>(1);
   const [currentDividendVaulInfo, setCurrentDividendVaultInfo] = useState<DividendVaultType | null>(null);
+  const [inputTokenAddress, setInputTokenAddress] = useState<string>("");
 
   useEffect(() => {
     if ((currEpoch != null) && (connection)) {
@@ -132,6 +133,21 @@ export default function AdminPage() {
     const value = event.target.value;
     const inputEpoch = parseInt(value);
     setValue(inputEpoch);
+  }
+
+  const handleAddWhitelist = async () => {
+    const mintAddress = new PublicKey(inputTokenAddress);
+    if (wallet?.publicKey && program) {
+      const transaction = new Transaction();
+      const addWLTokenIx = await createAddWhitelistNftIntruction(program, mintAddress, wallet?.publicKey);
+      transaction.add(addWLTokenIx);
+      transaction.feePayer = wallet.publicKey;
+      transaction.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
+      const signedTx = await wallet.signTransaction?.(transaction);
+      const rawTx = signedTx.serialize();
+      const signature = connection.sendRawTransaction(rawTx);
+      console.log(signature);
+    }
   }
 
   return (
@@ -233,6 +249,7 @@ export default function AdminPage() {
                   bg: useColorModeValue('gray.200', 'gray.800'),
                   outline: 'none',
                 }}
+                onChange={(e) => setInputTokenAddress(e.target.value)}
               />
               <Button
                 bg={'blue.400'}
@@ -240,7 +257,9 @@ export default function AdminPage() {
                 color={'white'}
                 flex={'1 0 auto'}
                 _hover={{ bg: 'blue.500' }}
-                _focus={{ bg: 'blue.500' }}>
+                _focus={{ bg: 'blue.500' }}
+                onClick={handleAddWhitelist}
+                >
                 Whitelist NFT
               </Button>
 
