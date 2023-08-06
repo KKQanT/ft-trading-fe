@@ -17,7 +17,7 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { EPOCH_DURATION, START_TS, getSolanaTime } from '../../utils/web3';
 
-import { createAddWhitelistNftIntruction, createCreateDividendVaultInstruction } from '../../smart-contract/intructions';
+import { createAddWhitelistNftIntruction, createCreateDividendVaultInstruction, createResetWhitelistNftIntruction } from '../../smart-contract/intructions';
 import { DividendVaultType, getDividendVaultInfoByEpoch } from '../../smart-contract/accounts';
 import { useWeb3 } from '../../stores/useWeb3';
 
@@ -115,6 +115,25 @@ export default function AdminPage() {
       const transaction = new Transaction();
       const addWLTokenIx = await createAddWhitelistNftIntruction(program, mintAddress, wallet?.publicKey);
       transaction.add(addWLTokenIx);
+      transaction.feePayer = wallet.publicKey;
+      transaction.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
+      const signedTx = await wallet.signTransaction?.(transaction);
+      const rawTx = signedTx.serialize();
+      const signature = connection.sendRawTransaction(rawTx);
+      console.log(signature);
+    }
+  }
+
+  const handleResetWhitelist = async () => {
+    const mintAddress = new PublicKey(inputTokenAddress);
+    if (wallet?.publicKey && program) {
+      const transaction = new Transaction();
+      const resetWLTokenIx = await createResetWhitelistNftIntruction(
+        program,
+        mintAddress,
+        wallet?.publicKey
+      );
+      transaction.add(resetWLTokenIx);
       transaction.feePayer = wallet.publicKey;
       transaction.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
       const signedTx = await wallet.signTransaction?.(transaction);
@@ -235,6 +254,17 @@ export default function AdminPage() {
                 onClick={handleAddWhitelist}
               >
                 Whitelist NFT
+              </Button>
+              <Button
+                bg={'blue.400'}
+                rounded={'full'}
+                color={'white'}
+                flex={'1 0 auto'}
+                _hover={{ bg: 'blue.500' }}
+                _focus={{ bg: 'blue.500' }}
+                onClick={handleResetWhitelist}
+              >
+                Reset NFT
               </Button>
 
             </Stack>

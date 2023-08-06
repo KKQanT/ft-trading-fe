@@ -60,6 +60,31 @@ export type FtTrading = {
       ]
     },
     {
+      "name": "resetWhitelistNft",
+      "accounts": [
+        {
+          "name": "whitelistNft",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "mintAddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "whitelistNftBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "sell",
       "accounts": [
         {
@@ -469,6 +494,31 @@ export const IDL: FtTrading = {
         {
           "name": "mintAddress",
           "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "resetWhitelistNft",
+      "accounts": [
+        {
+          "name": "whitelistNft",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "mintAddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "whitelistNftBump",
+          "type": "u8"
         }
       ]
     },

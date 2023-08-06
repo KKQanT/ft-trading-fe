@@ -34,6 +34,36 @@ export const getDividendVaultInfoByEpoch = async (
   } as DividendVaultType
 }
 
+export const getAllDividendVaults = async (
+  connection: Connection,
+) => {
+  const accounts = await connection.getParsedProgramAccounts(
+    S3T_TRADE_PROGRAM_ID,
+    {
+      filters: [
+        {
+          dataSize: 8 + 8 * 3
+        },
+      ]
+    }
+  );
+
+  if (accounts.length > 0) {
+    const decodedAccounts = accounts.map((item) => {
+      const decodedData = dividendVaultSchema.decode(item.account.data);
+      return {
+        address: item.pubkey.toBase58(),
+        epoch: decodedData.epoch.toNumber(),
+        solDividendAmount: decodedData.lamport_dividend_amount.toNumber() / LAMPORTS_PER_SOL,
+        totalShare: decodedData.total_share.toNumber()
+      } as DividendVaultType
+    });
+    return decodedAccounts as DividendVaultType[]
+  } else {
+    return []
+  }
+}
+
 export interface WhitelistedTokenType {
   address: string,
   tokenAddress: string,
@@ -60,6 +90,35 @@ export const getWhitelistedTokenInfo = async (
     tokenAddress: tokenAddress.toBase58(),
     lastClaimedTs: decodedData.last_claim_ts.toNumber()
   } as WhitelistedTokenType
+}
+
+export const getAllWhitelistedTokenInfos = async (
+  connection: Connection,
+) => {
+  const accounts = await connection.getParsedProgramAccounts(
+    S3T_TRADE_PROGRAM_ID,
+    {
+      filters: [
+        {
+          dataSize: 8 + 32 + 8
+        },
+      ]
+    }
+  );
+
+  if (accounts.length > 0) {
+    const decodedAccounts = accounts.map((item) => {
+      const decodedData = whitelistedNFTSchema.decode(item.account.data);
+      return {
+        address: item.pubkey.toBase58(),
+        tokenAddress: decodedData.token_address.toBase58(),
+        lastClaimedTs: decodedData.last_claim_ts.toNumber()
+      } as WhitelistedTokenType
+    });
+    return decodedAccounts as WhitelistedTokenType[]
+  } else {
+    return []
+  }
 }
 
 export interface userShareAccountType {
@@ -91,7 +150,7 @@ export const getUserShareAccountInfo = async (
 }
 
 interface SellerEscrowAccountInfo {
-  address:  string,
+  address: string,
   escrowId: string,
   seller: string,
   tokenAddress: string,
@@ -127,7 +186,7 @@ export const getAllSellerEscrowAccountsInfo = async (
     });
 
     return decodedAccounts
-    
+
   } else {
     return [] as SellerEscrowAccountInfo[]
   }

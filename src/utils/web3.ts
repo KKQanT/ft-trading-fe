@@ -1,7 +1,7 @@
 import { PublicKey, Connection, Keypair, Transaction, SystemProgram } from "@solana/web3.js";
 import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, createInitializeMint2Instruction, createInitializeMintInstruction, createMintToInstruction, getAssociatedTokenAddress, getMinimumBalanceForRentExemptAccount, getMinimumBalanceForRentExemptMint } from "@solana/spl-token";
 import { createCreateMetadataAccountV3Instruction } from "@metaplex-foundation/mpl-token-metadata";
-
+import { GetProgramAccountsFilter } from "@solana/web3.js";
 export async function checkAssociatedTokenAccount(
   connection: Connection,
   tokenAddress: PublicKey,
@@ -132,4 +132,39 @@ export const createMintTokenTransaction = async (
 
   return mintTransaction
 
+}
+
+export interface UserTokenType {
+  mintAddress: string,
+  tokenBalance: number
+} 
+
+export const getUserTokens = async (wallet: string, solanaConnection: Connection) => {
+  const filters: GetProgramAccountsFilter[] = [
+    {
+      dataSize: 165,    //size of account (bytes)
+    },
+    {
+      memcmp: {
+        offset: 32,     //location of our query in the account (bytes)
+        bytes: wallet,  //our search criteria, a base58 encoded string
+      },
+    }];
+  const accounts = await solanaConnection.getParsedProgramAccounts(
+    TOKEN_PROGRAM_ID, //new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
+    { filters: filters }
+  );  
+
+  const dataArr = accounts.map((account) => {
+    const parsedAccountInfo: any = account.account.data;
+    const mintAddress: string = parsedAccountInfo["parsed"]["info"]["mint"];
+    const tokenBalance: number = parsedAccountInfo["parsed"]["info"]["tokenAmount"]["uiAmount"];
+
+    return {
+      mintAddress: mintAddress,
+      tokenBalance: tokenBalance
+    }
+  });
+
+  return dataArr
 }

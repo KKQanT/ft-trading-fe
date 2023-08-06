@@ -61,6 +61,27 @@ export const createAddWhitelistNftIntruction = async (
   }).instruction()
 }
 
+export const createResetWhitelistNftIntruction = async (
+  program: anchor.Program<anchor.Idl | FtTrading>,
+  tokenAddress: PublicKey,
+  admin: PublicKey
+) => {
+  const [whitelistNft, bump] = await PublicKey.findProgramAddress(
+    [
+      Buffer.from('whitelist_nft'),
+      tokenAddress.toBuffer()
+    ], S3T_TRADE_PROGRAM_ID
+  );
+  
+  return program.methods.resetWhitelistNft(
+    tokenAddress,
+    bump
+  ).accounts({
+    whitelistNft: whitelistNft,
+    admin: admin
+  }).instruction()
+}
+
 export const createSellTransaction = async (
   connection: Connection,
   program: anchor.Program<anchor.Idl | FtTrading>,

@@ -19,6 +19,9 @@ import { useWeb3 } from './stores/useWeb3';
 import * as anchor from '@project-serum/anchor';
 import { FtTrading, IDL } from './smart-contract/program_types';
 import { S3T_TRADE_PROGRAM_ID } from './smart-contract/program';
+import { getUserTokens } from './utils/web3';
+import { getAllDividendVaults, getAllWhitelistedTokenInfos } from './smart-contract/accounts';
+import { useProgramData } from './stores/useProgramData';
 
 
 function App() {
@@ -33,7 +36,11 @@ function App() {
 function WrappedApp() {
   const wallet = useAnchorWallet();
 
-  const {connection, setProgram} = useWeb3()
+  const { connection, program, setProgram, setHolderTokens } = useWeb3()
+  const {
+    setAllWhiteListedTokenInfo, 
+    setAllDividendVaultInfos
+  } = useProgramData()
 
   useEffect(() => {
     if (wallet?.publicKey) {
@@ -51,6 +58,36 @@ function WrappedApp() {
       setProgram(program);
     }
   }, [wallet?.publicKey]);
+
+  useEffect(() => {
+    if (wallet?.publicKey && connection) {
+      getUserTokens(
+        wallet.publicKey.toBase58(), connection
+      ).then((dataArr) => {
+        const filteredDataArr = dataArr.filter((item) => item.tokenBalance > 0)
+        setHolderTokens(filteredDataArr)
+      }).catch((err) => { console.log(err) })
+    }
+  }, [wallet?.publicKey])
+
+  useEffect(() => {
+    if (program && connection) {
+      getProgramData();
+    }
+  }, [program])
+
+
+
+  const getProgramData = async () => {
+
+    //due to limit of rpc free tier we have to fetch data like this
+
+    const dataArrWL = await getAllWhitelistedTokenInfos(connection);
+    setAllWhiteListedTokenInfo(dataArrWL);
+
+    const dataArrDV = await getAllDividendVaults(connection);
+    setAllDividendVaultInfos(dataArrDV);
+  }
 
   return (
     <Routes>
