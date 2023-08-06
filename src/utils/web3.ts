@@ -38,8 +38,8 @@ export const createMintTokenTransaction = async (
   connection: Connection,
   payer: PublicKey,
   mintKeypair: Keypair,
-  metadataUri: string,
   amount: number,
+  metadataUri: string,
   name: string,
   symbol: string
 
@@ -87,6 +87,10 @@ export const createMintTokenTransaction = async (
   );
 
   mintTransaction.add(mintToIx);
+
+  if ((metadataUri == "") || (name == "") || (symbol == "")) {
+    return mintTransaction
+  }
 
   const [metadataAddress] = await PublicKey.findProgramAddress(
     [

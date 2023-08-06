@@ -83,10 +83,10 @@ export default function TokenService() {
     if (wallet?.publicKey && tokenKeypair) {
       const mintIx = await createMintTokenTransaction(
         connection,
-        wallet?.publicKey,
+        wallet.publicKey,
         tokenKeypair,
-        metadataUri,
         amount,
+        metadataUri,
         tokenName,
         tokenSymbol
       );
@@ -131,7 +131,7 @@ export default function TokenService() {
                 />
               </Center>
               <Stack mt='6' spacing='3'>
-                <Heading size='md'>{`${tokenName} (${tokenSymbol})`}</Heading>
+                <Heading size='md'>{`${tokenName} ${tokenSymbol}`}</Heading>
                 <Text alignSelf={"self-start"}>
                   Token Address : {
                     tokenKeypair?.publicKey.toBase58() ?
