@@ -1,28 +1,25 @@
-import { ReactNode, useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Container,
   SimpleGrid,
-  Image,
   Flex,
   Heading,
   Text,
   Stack,
   StackDivider,
-  Icon,
   useColorModeValue,
   Input,
   Button,
 } from '@chakra-ui/react'
 import { ReactElement } from 'react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import { EPOCH_DURATION, START_TS, getSolanaTime } from '../../utils/web3';
-import * as anchor from '@project-serum/anchor';
-import { FtTrading, IDL } from '../../smart-contract/program_types';
-import { S3T_TRADE_PROGRAM_ID } from '../../smart-contract/program';
+
 import { createAddWhitelistNftIntruction, createCreateDividendVaultInstruction } from '../../smart-contract/intructions';
 import { DividendVaultType, getDividendVaultInfoByEpoch } from '../../smart-contract/accounts';
+import { useWeb3 } from '../../stores/useWeb3';
 
 interface FeatureProps {
   text: string
@@ -45,13 +42,7 @@ export default function AdminPage() {
 
   const wallet = useAnchorWallet();
   const RPC = import.meta.env.VITE_REACR_APP_RPC
-  const connection = useMemo(
-    () => new Connection(RPC),
-    []
-  );
-  const [program, setProgram] = useState<null | anchor.Program<anchor.Idl | FtTrading>>(
-    null
-  );
+  const { connection, program } = useWeb3();
 
   const [currEpoch, setEpoch] = useState<number | null>(null);
   const [startEpoch, setStartEpoch] = useState<number>(0);
@@ -81,23 +72,6 @@ export default function AdminPage() {
         setEpoch(epoch);
       })
   }, [])
-
-  useEffect(() => {
-    if (wallet?.publicKey) {
-      const provider = new anchor.AnchorProvider(
-        connection,
-        wallet as anchor.Wallet,
-        {}
-      );
-      anchor.setProvider(provider);
-
-      const program = new anchor.Program(
-        IDL as anchor.Idl,
-        S3T_TRADE_PROGRAM_ID
-      );
-      setProgram(program);
-    }
-  }, [wallet?.publicKey]);
 
   const handleCreateVault = async () => {
     console.log("start: ", startEpoch);
@@ -259,7 +233,7 @@ export default function AdminPage() {
                 _hover={{ bg: 'blue.500' }}
                 _focus={{ bg: 'blue.500' }}
                 onClick={handleAddWhitelist}
-                >
+              >
                 Whitelist NFT
               </Button>
 

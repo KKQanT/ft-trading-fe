@@ -3,7 +3,7 @@ import './App.css'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
 import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { ConnectionProvider, WalletProvider, useAnchorWallet } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import Navbar from './components/Navber/Navbar';
 import { Routes, Route } from "react-router-dom";
@@ -14,8 +14,57 @@ import AdminPage from './components/Admin';
 
 import "@solana/wallet-adapter-react-ui/styles.css"
 import TokenService from './components/TokenService';
+import { useWeb3 } from './stores/useWeb3';
 
-const WalleAdapterContext: FC<{ children: ReactNode }> = (
+import * as anchor from '@project-serum/anchor';
+import { FtTrading, IDL } from './smart-contract/program_types';
+import { S3T_TRADE_PROGRAM_ID } from './smart-contract/program';
+
+
+function App() {
+  return (
+    <WalletAdapterContext>
+      <Navbar />
+      <WrappedApp />
+    </WalletAdapterContext>
+  )
+}
+
+function WrappedApp() {
+  const wallet = useAnchorWallet();
+
+  const {connection, setProgram} = useWeb3()
+
+  useEffect(() => {
+    if (wallet?.publicKey) {
+      const provider = new anchor.AnchorProvider(
+        connection,
+        wallet as anchor.Wallet,
+        {}
+      );
+      anchor.setProvider(provider);
+
+      const program = new anchor.Program(
+        IDL as anchor.Idl,
+        S3T_TRADE_PROGRAM_ID
+      );
+      setProgram(program);
+    }
+  }, [wallet?.publicKey]);
+
+  return (
+    <Routes>
+      <Route index element={<Home />} />
+      <Route path="trade" element={<TradingPage />} />
+      <Route path='investor' element={<InvestorSection />} />
+      <Route path='admin' element={<AdminPage />} />
+      <Route path='token-service' element={<TokenService />} />
+    </Routes>
+  )
+
+}
+
+const WalletAdapterContext: FC<{ children: ReactNode }> = (
   { children }: { children: ReactNode }
 ) => {
   const network = WalletAdapterNetwork.Devnet;
@@ -36,21 +85,6 @@ const WalleAdapterContext: FC<{ children: ReactNode }> = (
       </WalletProvider>
     </ConnectionProvider>
   );
-}
-
-function App() {
-  return (
-    <WalleAdapterContext>
-      <Navbar />
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="trade" element={<TradingPage />} />
-        <Route path='investor' element={<InvestorSection />} />
-        <Route path='admin' element={<AdminPage/>} />
-        <Route path='token-service' element={<TokenService/>} />
-      </Routes>
-    </WalleAdapterContext>
-  )
 }
 
 export default App
