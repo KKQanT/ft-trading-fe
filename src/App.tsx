@@ -13,6 +13,7 @@ import InvestorSection from './components/Investor/InvestorSection';
 import AdminPage from './components/Admin';
 
 import "@solana/wallet-adapter-react-ui/styles.css"
+import TokenService from './components/TokenService';
 
 const WalleAdapterContext: FC<{ children: ReactNode }> = (
   { children }: { children: ReactNode }
@@ -46,6 +47,7 @@ function App() {
         <Route path="trade" element={<TradingPage />} />
         <Route path='investor' element={<InvestorSection />} />
         <Route path='admin' element={<AdminPage/>} />
+        <Route path='token-service' element={<TokenService/>} />
       </Routes>
     </WalleAdapterContext>
   )
