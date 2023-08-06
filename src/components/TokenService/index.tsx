@@ -7,27 +7,101 @@ import {
   Text,
   Input,
   Button,
-  Icon,
-  useColorModeValue,
-  createIcon,
   Image,
   Box,
   FormControl,
   FormLabel,
-  Checkbox,
-  ButtonGroup,
-  Divider,
   Center,
   Container,
 
 } from '@chakra-ui/react'
 
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import { Card, CardBody } from '@chakra-ui/react'
 
 
 import { SimpleGrid } from '@chakra-ui/react';
+import { Connection, Keypair } from '@solana/web3.js';
+import axios from 'axios';
+import { useEffect, useState, useMemo } from 'react';
+import { createMintTokenTransaction } from '../../utils/web3';
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
+import shortenHash from '../../utils';
 
 export default function TokenService() {
+
+  const [tokenKeypairRaw, setTokenKeypairRaw] = useState<number[]>([]);
+  const [tokenKeypair, setTokenKeypair] = useState<Keypair | null>(null);
+  const [tokenName, setTokenName] = useState<string>("");
+  const [tokenSymbol, setTokenSymbol] = useState<string>("");
+  const [metadataUri, setMetadataUri] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
+  const [tokenImageUri, setTokenImageUri] = useState<string>('public/solana-sol-logo-12828AD23D-seeklogo.com.png');
+  const [signature, setSignature] = useState<string>("");
+
+  const RPC = import.meta.env.VITE_REACR_APP_RPC
+
+  const connection = useMemo(
+    () => new Connection(RPC),
+    []
+  );
+
+  const wallet = useAnchorWallet();
+
+  useEffect(() => {
+    if (tokenKeypairRaw.length > 0) {
+      const keypair = Keypair.fromSecretKey(
+        Uint8Array.from(tokenKeypairRaw)
+      );
+      setTokenKeypair(keypair);
+    }
+  }, [tokenKeypairRaw]);
+
+  const onChangeKeypair = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const value = event.target.value;
+    const parsedArray = JSON.parse(value);
+    if (Array.isArray(parsedArray)) {
+      setTokenKeypairRaw(parsedArray);
+    }
+  }
+
+  const onClickGenerateKeypair = () => {
+    const keypair = new Keypair();
+    setTokenKeypair(keypair);
+  }
+
+  useEffect(() => {
+
+    axios.get(metadataUri).then((resp) => {
+      const imageUri = resp.data.image
+      setTokenImageUri(imageUri);
+    }).catch((err) => { console.log(err) })
+
+  }, [metadataUri])
+
+  const handleMint = async () => {
+    if (wallet?.publicKey && tokenKeypair) {
+      const mintIx = await createMintTokenTransaction(
+        connection,
+        wallet?.publicKey,
+        tokenKeypair,
+        metadataUri,
+        amount,
+        tokenName,
+        tokenSymbol
+      );
+
+      mintIx.feePayer = wallet.publicKey;
+      mintIx.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
+      mintIx.partialSign(tokenKeypair);
+      const signedTx = await wallet.signTransaction(mintIx);
+      const wireTx = signedTx.serialize();
+      const mintSignature = await connection.sendRawTransaction(wireTx, { skipPreflight: true });
+      setSignature(mintSignature);
+
+    }
+  }
+
   return (
     <Container maxW={'3xl'}>
       <Stack
@@ -44,22 +118,28 @@ export default function TokenService() {
             SERVICE
           </Text>
         </Heading>
-        <SimpleGrid columns={2} spacing={10} width={"xl"}  alignSelf={"center"}>
+        <SimpleGrid columns={2} spacing={10} width={"xl"} alignSelf={"center"}>
 
           <Card maxW='sm' bg={'transparent'}>
             <CardBody>
               <Center>
                 <Image
-                  src='https://arweave.net/aCDlkArxcY137kRSk6Y5TRVwudQb3qiPwickKTywxUk?ext=png'
+                  src={tokenImageUri}
                   alt='Green double couch with wooden legs'
                   borderRadius='lg'
                   height={"2xs"}
                 />
               </Center>
               <Stack mt='6' spacing='3'>
-                <Heading size='md'>S3T Trade Stock (S3T)</Heading>
-                <Text>
-                  Token Address : {"xgCX33XmVLqdXbYJv5FFXUFRxdzPBCk34SGZWhzdbLr"}
+                <Heading size='md'>{`${tokenName} (${tokenSymbol})`}</Heading>
+                <Text alignSelf={"self-start"}>
+                  Token Address : {
+                    tokenKeypair?.publicKey.toBase58() ?
+                      shortenHash(tokenKeypair?.publicKey.toBase58()) :
+                      ""}
+                </Text>
+                <Text alignSelf={"self-start"}>
+                  Signature : {signature.length > 0  ? shortenHash(signature) : ""}
                 </Text>
               </Stack>
             </CardBody>
@@ -70,38 +150,47 @@ export default function TokenService() {
 
             <FormControl>
               <FormLabel>Token Keypair</FormLabel>
-              <Input type="text" />
+              <Input type="text" onChange={onChangeKeypair} />
             </FormControl>
             <Button
-              bg={'orange.400'}
+              bg={'gray.800'}
               color={'white'}
               _hover={{
-                bg: 'orange.500',
-              }}>
+                bg: 'gray.500',
+              }}
+              onClick={onClickGenerateKeypair}
+            >
               Generate
             </Button>
 
             <FormControl>
               <FormLabel>Token Name</FormLabel>
-              <Input type="text" />
+              <Input type="text" onChange={(e) => setTokenName(e.target.value)} />
             </FormControl>
 
             <FormControl>
               <FormLabel>Token Symbol</FormLabel>
-              <Input type="text" />
+              <Input type="text" onChange={(e) => setTokenSymbol(e.target.value)} />
             </FormControl>
 
             <FormControl>
               <FormLabel>Metadata URI</FormLabel>
-              <Input type="text" />
+              <Input type="text" onChange={(e) => setMetadataUri(e.target.value)} />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Amount</FormLabel>
+              <Input type="number" onChange={(e) => setAmount(parseInt(e.target.value))} />
             </FormControl>
 
             <Button
-              bg={'blue.400'}
+              bg={'orange.400'}
               color={'white'}
               _hover={{
-                bg: 'blue.500',
-              }}>
+                bg: 'orange.500',
+              }}
+              onClick={handleMint}
+              >
               Mint
             </Button>
 

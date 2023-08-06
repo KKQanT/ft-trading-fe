@@ -34,7 +34,7 @@ export const EPOCH_DURATION = 86400
 export const METADATA_PROGRAM_ID =
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s";
 
-export const mintToken = async (
+export const createMintTokenTransaction = async (
   connection: Connection,
   payer: PublicKey,
   mintKeypair: Keypair,

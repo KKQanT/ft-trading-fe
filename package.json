@@ -23,6 +23,7 @@
     "@solana/wallet-adapter-react-ui": "^0.9.32",
     "@solana/wallet-adapter-wallets": "^0.19.19",
     "@solana/web3.js": "^1.78.2",
+    "axios": "^1.4.0",
     "framer-motion": "^10.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
