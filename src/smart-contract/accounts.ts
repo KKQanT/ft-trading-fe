@@ -140,13 +140,47 @@ export const getUserShareAccountInfo = async (
     ], S3T_TRADE_PROGRAM_ID
   );
   const accountInfo = await connection.getAccountInfo(userShareAccount);
+  console.log("usershare accountInfo", accountInfo);
   const decodedData = userShareAccountSchema.decode(accountInfo?.data);
 
   return {
     address: userShareAccount.toBase58(),
     epoch: decodedData.epoch.toNumber(),
-    rewardShare: decodedData.epoch.toNumber(),
+    rewardShare: decodedData.reward_share.toNumber(),
   } as userShareAccountType
+}
+
+export const getUserAllShareAccountInfo = async (
+  connection: Connection,
+) => {
+  const accounts = await connection.getParsedProgramAccounts(
+    S3T_TRADE_PROGRAM_ID,
+    {
+      filters: [
+        {
+          dataSize: 8 + 8 + 8 + 32
+        },
+      ]
+    }
+  );
+
+  if (accounts.length > 0) {
+    const decodedAccounts = accounts.map((item) => {
+      const decodedData = userShareAccountSchema.decode(item.account.data);
+      return {
+        address: item.pubkey.toBase58(),
+        epoch: decodedData.epoch.toNumber() as number,
+        rewardShare: decodedData.reward_share.toNumber() as number,
+      }
+    });
+
+    console.log(decodedAccounts)
+
+    return decodedAccounts
+
+  } else {
+    return [] as userShareAccountType[]
+  }
 }
 
 export interface SellerEscrowAccountInfo {

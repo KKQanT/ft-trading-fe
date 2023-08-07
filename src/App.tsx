@@ -42,7 +42,6 @@ function WrappedApp() {
     program, 
     setProgram, 
     setUserTokens, 
-    currEpoch, 
     setCurrEpoch
    } = useWeb3();
   const {setLoading} = useLoading();
@@ -107,6 +106,7 @@ function WrappedApp() {
     setAllWhiteListedTokenInfo(dataArrWL);
 
     const dataArrDV = await getAllDividendVaults(connection);
+    console.log("dataArrDV: ", dataArrDV)
     setAllDividendVaultInfos(dataArrDV);
 
     const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);

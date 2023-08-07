@@ -3,8 +3,39 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import NFTList from "./NFTList";
 import RewardList from "./RewardList";
 import Loading from "../Loading/loading";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import { useWeb3 } from "../../stores/useWeb3"
+import { useEffect, useState } from "react";
+import { getUserAllShareAccountInfo, getUserShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
+import { useLoading } from "../../stores/useLoading";
 
 const InvestorSection = () => {
+
+  const wallet = useAnchorWallet();
+
+  const { currEpoch, connection } = useWeb3();
+  const [userAllShareAccounts, setUserAllShareAccounts] = useState<userShareAccountType[]>([]);
+  const [userShareAccount, setUserShareAccount] = useState<userShareAccountType|null>(null);
+  const {setLoading} = useLoading();
+
+  useEffect(() => {
+
+    if (wallet?.publicKey) {
+      getUserShareAccounts();
+    }
+
+  }, [wallet?.publicKey])
+
+  const getUserShareAccounts = async () => {
+    setLoading(true);
+    const accounts = await getUserAllShareAccountInfo(connection);
+    setUserAllShareAccounts(accounts);
+    const filtered = accounts.filter((item) => item.epoch == currEpoch);
+    if (filtered.length > 0) {
+      setUserShareAccount(filtered[0])
+    }
+    setLoading(false);
+  }
 
   return (
     <>
@@ -35,7 +66,7 @@ const InvestorSection = () => {
                 <NFTList />
               </TabPanel>
               <TabPanel>
-                <RewardList />
+                <RewardList userAllShareAccounts={userAllShareAccounts}/>
               </TabPanel>
             </TabPanels>
 
