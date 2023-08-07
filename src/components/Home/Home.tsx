@@ -26,9 +26,7 @@ export default function Home() {
             </Text>
           </Heading>
           <Text color={'gray.500'}>
-            Monetize your content by charging your most loyal readers and reward them
-            loyalty points. Give back to your loyal readers by granting them access to
-            your pre-releases and sneak-peaks.
+          Welcome to S3T Trade, where safe token trading is our priority! Buy, sell, and trade NFTs/FTs securely on our platform. Hold our NFTs to become a shareholder and receive real-time dividend shares in SOL from platform income. Join us now for the future of digital asset trading! 🚀💎 #TradeNFT #Crypto #SOLDividends
           </Text>
           <Stack
             direction={'column'}

@@ -28,10 +28,7 @@ const TradePageHeader = () => {
         </Text>
       </Heading>
       <Text color={'gray.500'} maxW={'3xl'}>
-        Never miss a meeting. Never be late for one too. Keep track of your meetings and
-        receive smart reminders in appropriate times. Read your smart “Daily Agenda”
-        every morning.
-      </Text>
+      We charge buyers a 10% fee. Rest assured, all fees contribute to our central treasury account, where they are distributed among our valued shareholders. Join us now to enjoy guaranteed benefits as a S3T Trade shareholder! 📈💰    </Text>
       <Stack spacing={6} direction={'row'}>
         <Button
           rounded={'full'}
