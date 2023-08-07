@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   Stack,
+  Link,
 } from '@chakra-ui/react'
 
 export default function Home() {
@@ -26,7 +27,11 @@ export default function Home() {
             </Text>
           </Heading>
           <Text color={'gray.500'}>
-          Welcome to S3T Trade, where safe token trading is our priority! Buy, sell, and trade NFTs/FTs securely on our platform. Hold our NFTs to become a shareholder and receive real-time dividend shares in SOL from platform income. Join us now for the future of digital asset trading! 🚀💎 #TradeNFT #Crypto #SOLDividends
+            Welcome to S3T Trade, where safe token trading is our priority! Buy, sell, and trade NFTs/FTs securely on our platform. Hold our NFTs to become a shareholder and receive real-time dividend shares in SOL from platform income. Join us now for the future of digital asset trading!
+            <br />
+            {"All transactions are transaparante on chains: "}
+            <Link color={"orange.500"} href='https://solscan.io/account/SETaVQKfUNLS2xUR61uauMTptRdKyaKHfPYjDvHAnxv?cluster=devnet'>SETaVQKfUNLS2xUR61uauMTptRdKyaKHfPYjDvHAnxv
+            </Link>
           </Text>
           <Stack
             direction={'column'}
