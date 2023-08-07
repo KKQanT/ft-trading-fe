@@ -7,7 +7,6 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  useDisclosure,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -21,11 +20,9 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
 } from '@chakra-ui/react'
 
@@ -45,7 +42,7 @@ interface PropType {
 
 
 function ListTokenModal(
-  { isOpen, onOpen, onClose }: PropType
+  { isOpen, onClose }: PropType
 ) {
   const { userTokens, connection, program } = useWeb3();
   const [selectedToken, setSelectedToken] = useState<string | null>(null);

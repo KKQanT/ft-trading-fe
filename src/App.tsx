@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, FC, useState, useEffect } from 'react'
+import { ReactNode, useMemo, FC, useEffect } from 'react'
 import './App.css'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
@@ -17,7 +17,7 @@ import TokenService from './components/TokenService';
 import { useWeb3 } from './stores/useWeb3';
 
 import * as anchor from '@project-serum/anchor';
-import { FtTrading, IDL } from './smart-contract/program_types';
+import { IDL } from './smart-contract/program_types';
 import { S3T_TRADE_PROGRAM_ID } from './smart-contract/program';
 import { EPOCH_DURATION, START_TS, getSolanaTime, getUserTokens } from './utils/web3';
 import { getAllDividendVaults, getAllSellerEscrowAccountsInfo, getAllWhitelistedTokenInfos } from './smart-contract/accounts';

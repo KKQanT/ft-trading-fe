@@ -15,7 +15,6 @@ import {
 import { ReactElement } from 'react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { EPOCH_DURATION, START_TS, getSolanaTime } from '../../utils/web3';
 
 import { createAddWhitelistNftIntruction, createCreateDividendVaultInstruction, createForceCloseIx, createResetWhitelistNftIntruction } from '../../smart-contract/intructions';
 import { DividendVaultType, getDividendVaultInfoByEpoch } from '../../smart-contract/accounts';
@@ -41,7 +40,6 @@ const Feature = ({ text, icon, iconBg }: FeatureProps) => {
 export default function AdminPage() {
 
   const wallet = useAnchorWallet();
-  const RPC = import.meta.env.VITE_REACR_APP_RPC
   const { connection, program } = useWeb3();
 
   const {currEpoch} = useWeb3();

@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  Flex,
   Stack,
   Heading,
   Text,
@@ -20,14 +19,13 @@ import { Card, CardBody } from '@chakra-ui/react'
 
 
 import { SimpleGrid } from '@chakra-ui/react';
-import { Connection, Keypair } from '@solana/web3.js';
+import {  Keypair } from '@solana/web3.js';
 import axios from 'axios';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { createMintTokenTransaction } from '../../utils/web3';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import shortenHash from '../../utils';
 import { useWeb3 } from '../../stores/useWeb3';
-import { useProgramData } from '../../stores/useProgramData';
 
 export default function TokenService() {
 
@@ -40,7 +38,7 @@ export default function TokenService() {
   const [tokenImageUri, setTokenImageUri] = useState<string>('public/solana-sol-logo-12828AD23D-seeklogo.com.png');
   const [signature, setSignature] = useState<string>("");
 
-  const {connection, userTokens} = useWeb3();
+  const {connection} = useWeb3();
 
   const wallet = useAnchorWallet();
 

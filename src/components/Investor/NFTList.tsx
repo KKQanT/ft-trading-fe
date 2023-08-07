@@ -1,5 +1,5 @@
-import { SimpleGrid, Button, Divider } from "@chakra-ui/react";
-import { Card, CardHeader, CardBody, CardFooter, Text, Heading, Image } from '@chakra-ui/react';
+import { SimpleGrid, Button } from "@chakra-ui/react";
+import { Card, CardHeader, CardBody, Text, Heading, Image } from '@chakra-ui/react';
 import { useWeb3 } from "../../stores/useWeb3";
 import { useProgramData } from "../../stores/useProgramData";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ interface PreprocessedWlTokenDataType {
 const NFTList = () => {
 
   const { userTokens, connection } = useWeb3();
-  const { allDividendVaultInfos, allWhiteListedTokenInfo } = useProgramData();
+  const {  allWhiteListedTokenInfo } = useProgramData();
   const [preprocessedTokensData, setPreprocessedTokensData] = useState<PreprocessedWlTokenDataType[]>([]);
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import Loading from "../Loading/loading";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { useWeb3 } from "../../stores/useWeb3"
 import { useEffect, useState } from "react";
-import { getUserAllShareAccountInfo, getUserShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
+import { getUserAllShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
 import { useLoading } from "../../stores/useLoading";
 
 const InvestorSection = () => {
@@ -15,7 +15,7 @@ const InvestorSection = () => {
 
   const { currEpoch, connection } = useWeb3();
   const [userAllShareAccounts, setUserAllShareAccounts] = useState<userShareAccountType[]>([]);
-  const [userShareAccount, setUserShareAccount] = useState<userShareAccountType|null>(null);
+  const [_userShareAccount, setUserShareAccount] = useState<userShareAccountType|null>(null);
   const {setLoading} = useLoading();
 
   useEffect(() => {

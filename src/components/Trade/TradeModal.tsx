@@ -9,8 +9,6 @@ import {
   Button,
   Text,
   Flex,
-  Spacer,
-  Stack,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -18,20 +16,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from '@chakra-ui/react'
 
 import { TokenInfo } from './TokenListCard';
-import shortenHash from '../../utils';
 import { useState } from "react";
 import { createBuyTransaction } from '../../smart-contract/intructions';
 import { useWeb3 } from '../../stores/useWeb3';

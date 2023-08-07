@@ -1,5 +1,5 @@
 import { PublicKey, Connection, Keypair, Transaction, SystemProgram } from "@solana/web3.js";
-import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, createInitializeMint2Instruction, createInitializeMintInstruction, createMintToInstruction, getAssociatedTokenAddress, getMinimumBalanceForRentExemptAccount, getMinimumBalanceForRentExemptMint } from "@solana/spl-token";
+import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, createInitializeMintInstruction, createMintToInstruction, getAssociatedTokenAddress, getMinimumBalanceForRentExemptMint } from "@solana/spl-token";
 import { createCreateMetadataAccountV3Instruction } from "@metaplex-foundation/mpl-token-metadata";
 import { GetProgramAccountsFilter } from "@solana/web3.js";
 

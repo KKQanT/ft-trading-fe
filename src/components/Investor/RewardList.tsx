@@ -1,7 +1,4 @@
 import {
-  Heading,
-  Center,
-  Spacer,
   TableContainer,
   Table,
   Thead,

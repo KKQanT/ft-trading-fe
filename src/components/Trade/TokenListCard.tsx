@@ -20,41 +20,6 @@ import TradeModal from './TradeModal'
 import { useState, useEffect } from "react";
 import { useProgramData } from '../../stores/useProgramData'
 
-interface AggregratedTokenDataProps {
-  image: string,
-  name: string,
-  address: string,
-  qty: number,
-  avgPrice: number
-}
-
-const AggregratedTokenData: AggregratedTokenDataProps[] = [
-  {
-    image: "https://quei6zhlcfsxdfyes577gy7bkxmuz7qqakyt72xlbkyh7fysmoza.arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I",
-    name: "bonk",
-    address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-    qty: 10,
-    avgPrice: 0.0001
-
-  },
-  {
-    image: "https://gateway.pinata.cloud/ipfs/Qmb5qNLPhR8fJaz5MN1W55iSCXdNgMMSdWn94Z9oiFjw3o",
-    name: "dust",
-    address: "DUSTawucrTsGU8hcqRdHDCbuYhCPADMLM2VcCb8VnFnQ",
-    qty: 20,
-    avgPrice: 0.01
-
-  },
-  {
-    image: "https://raw.githubusercontent.com/puppetmonkester/img-repo/main/logo.png",
-    name: "ata",
-    address: "9cyEStsrZF7LzqLzbNcuUeuat1NM4eHrBVApvkPBCQk4",
-    qty: 30,
-    avgPrice: 0.1
-
-  }
-]
-
 export interface TokenInfo {
   tokenAddress: string,
   pricePerToken: number,
