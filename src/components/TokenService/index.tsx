@@ -35,7 +35,7 @@ export default function TokenService() {
   const [tokenSymbol, setTokenSymbol] = useState<string>("");
   const [metadataUri, setMetadataUri] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
-  const [tokenImageUri, setTokenImageUri] = useState<string>('public/solana-sol-logo-12828AD23D-seeklogo.com.png');
+  const [tokenImageUri, setTokenImageUri] = useState<string>('solana-sol-logo-12828AD23D-seeklogo.com.png');
   const [signature, setSignature] = useState<string>("");
 
   const {connection} = useWeb3();
