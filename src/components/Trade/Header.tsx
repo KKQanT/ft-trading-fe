@@ -6,10 +6,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import ListTokenModal from './ListTokenModal';
+import { useNavigate } from "react-router-dom";
 
 const TradePageHeader = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -40,7 +42,7 @@ const TradePageHeader = () => {
         >
           List Your Token
         </Button>
-        <Button rounded={'full'} px={6}>
+        <Button rounded={'full'} px={6} onClick={() => navigate('/token-service')}>
           Create Your Token
         </Button>
       </Stack>

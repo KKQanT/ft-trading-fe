@@ -8,7 +8,10 @@ import {
   Link,
 } from '@chakra-ui/react'
 
+import { useNavigate } from "react-router-dom";
+
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <>
       <Container maxW={'3xl'}>
@@ -46,10 +49,12 @@ export default function Home() {
               px={6}
               _hover={{
                 bg: 'orange.600',
-              }}>
+              }}
+              onClick={() => {navigate('/trade')}}
+              >
               Trade
             </Button>
-            <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
+            <Button variant={'link'} colorScheme={'blue'} size={'sm'} onClick={() => {navigate('/investor')}}>
               Investor
             </Button>
           </Stack>

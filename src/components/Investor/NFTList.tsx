@@ -1,4 +1,4 @@
-import { SimpleGrid, Button } from "@chakra-ui/react";
+import { SimpleGrid, Button, Center } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, Text, Heading, Image } from '@chakra-ui/react';
 import { useWeb3 } from "../../stores/useWeb3";
 import { useProgramData } from "../../stores/useProgramData";
@@ -19,7 +19,7 @@ interface PreprocessedWlTokenDataType {
 const NFTList = () => {
 
   const { userTokens, connection } = useWeb3();
-  const {  allWhiteListedTokenInfo } = useProgramData();
+  const { allWhiteListedTokenInfo } = useProgramData();
   const [preprocessedTokensData, setPreprocessedTokensData] = useState<PreprocessedWlTokenDataType[]>([]);
 
   useEffect(() => {
@@ -63,9 +63,12 @@ const NFTList = () => {
 
   }
 
+  if (preprocessedTokensData.length == 0) {
+    return <Center>You hold any of our stocks</Center>
+  }
+
   return (
     <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
-
       {preprocessedTokensData.map((item) => {
         return (
           <Card>
