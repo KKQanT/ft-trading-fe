@@ -35,7 +35,7 @@ import shortenHash from '../../utils';
 import { useState } from "react";
 import { createSellTransaction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 
 interface PropType {
   isOpen: boolean,
@@ -55,13 +55,14 @@ function ListTokenModal(
 
   const handleSell = async () => {
     if (program && connection && wallet?.publicKey && selectedToken) {
+      
       const transaction = await createSellTransaction(
         connection,
         program,
         wallet?.publicKey,
         new PublicKey(selectedToken),
         tokenAmount,
-        price
+        price * LAMPORTS_PER_SOL
       );
 
       transaction.feePayer = wallet.publicKey;
@@ -116,11 +117,11 @@ function ListTokenModal(
                 <HStack>
                   <InputGroup>
                     <InputLeftAddon children='Price' />
-                    <Input placeholder='SOL/TOKEN' />
+                    <Input placeholder='SOL/TOKEN' onChange={(e) => setPrice(parseFloat(e.target.value))} />
                   </InputGroup>
                   <InputGroup>
                     <InputLeftAddon children='Amount' />
-                    <Input />
+                    <Input onChange={(e) => setTokenAmount(parseFloat(e.target.value))}/>
                   </InputGroup>
                 </HStack>
                 <Button width={"full"} colorScheme='orange' mr={3} onClick={handleSell}>

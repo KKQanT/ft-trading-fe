@@ -336,4 +336,31 @@ export const createClaimDividendIntruction = async (
   })
 }
 
+export const createForceCloseIx = async (
+  program: anchor.Program<anchor.Idl | FtTrading>,
+  admin: PublicKey,
+  escrowId: PublicKey,
+  seller: PublicKey,
+  tokenAddress: PublicKey,
+) => {
+  const [sellerEscrow, bump] = await PublicKey.findProgramAddress(
+    [
+      Buffer.from("seller_escrow"),
+      seller.toBuffer(),
+      tokenAddress.toBuffer(),
+      escrowId.toBuffer()
+    ], S3T_TRADE_PROGRAM_ID
+  );
+
+  return program.methods.forceCloseSell(
+    escrowId,
+    tokenAddress,
+    seller,
+    bump
+  ).accounts({
+    sellerEscrow: sellerEscrow,
+    admin: admin
+  }).instruction()
+}
+
 

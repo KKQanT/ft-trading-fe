@@ -18,6 +18,7 @@ import { RepeatIcon } from '@chakra-ui/icons'
 import shortenHash from '../../utils'
 import TradeModal from './TradeModal'
 import { useState, useEffect } from "react";
+import { useProgramData } from '../../stores/useProgramData'
 
 interface AggregratedTokenDataProps {
   image: string,
@@ -69,6 +70,7 @@ const TokenListCard = () => {
     tokenAddress: ""
   });
   const [tokenHasSet, setTokenHasSet] = useState<boolean>(false);
+  const { allSellEscrowInfo } = useProgramData()
 
   const openTrade = (
     image: string,
@@ -105,22 +107,31 @@ const TokenListCard = () => {
             <Table variant={"striped"} colorScheme={"orange"}>
               <Thead>
                 <Tr>
-                  <Th>Token Name</Th>
                   <Th>address</Th>
                   <Th isNumeric>qty</Th>
-                  <Th isNumeric>avg</Th>
-                  <Th> </Th>
+                  <Th isNumeric>price (sol/token)</Th>
                   <Th> </Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {AggregratedTokenData.map((item) => (
-                  <Tr>
-                    <Td>{item.name}</Td>
-                    <Td>{shortenHash(item.address)}</Td>
-                    <Td isNumeric>{item.qty}</Td>
-                    <Td isNumeric>{item.avgPrice}</Td>
-                    <Td ><Button onClick={() => openTrade(item.image, item.name, item.address)}>Trade</Button></Td>
+                {allSellEscrowInfo.map((item) => (
+                  <Tr key={item.escrowId}>
+                    <Td>{shortenHash(item.tokenAddress)}</Td>
+                    <Td isNumeric>{item.amount}</Td>
+                    <Td isNumeric>{item.pricePerToken}</Td>
+                    <Td>
+                      <Button
+                        alignSelf={"end"}
+                        onClick={
+                          () =>
+                            openTrade(
+                              "",
+                              "",
+                              item.address)
+                        }>
+                        Trade
+                      </Button>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

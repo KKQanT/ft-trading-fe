@@ -180,10 +180,12 @@ export const getAllSellerEscrowAccountsInfo = async (
         escrowId: decodedData.escrow_id.toBase58() as string,
         seller: decodedData.seller.toBase58() as string,
         tokenAddress: decodedData.token_address.toBase58() as string,
-        pricePerToken: decodedData.price_per_token.toNumber() as number,
+        pricePerToken: (decodedData.price_per_token.toNumber() / LAMPORTS_PER_SOL) as number,
         amount: decodedData.amount.toNumber() as number
       } as SellerEscrowAccountInfo
     });
+
+    console.log(decodedAccounts)
 
     return decodedAccounts
 

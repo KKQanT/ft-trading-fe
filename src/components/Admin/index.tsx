@@ -17,7 +17,7 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { EPOCH_DURATION, START_TS, getSolanaTime } from '../../utils/web3';
 
-import { createAddWhitelistNftIntruction, createCreateDividendVaultInstruction, createResetWhitelistNftIntruction } from '../../smart-contract/intructions';
+import { createAddWhitelistNftIntruction, createCreateDividendVaultInstruction, createForceCloseIx, createResetWhitelistNftIntruction } from '../../smart-contract/intructions';
 import { DividendVaultType, getDividendVaultInfoByEpoch } from '../../smart-contract/accounts';
 import { useWeb3 } from '../../stores/useWeb3';
 
@@ -49,6 +49,10 @@ export default function AdminPage() {
   const [endEpoch, setEndEpoch] = useState<number>(1);
   const [currentDividendVaulInfo, setCurrentDividendVaultInfo] = useState<DividendVaultType | null>(null);
   const [inputTokenAddress, setInputTokenAddress] = useState<string>("");
+
+  const [escrowId, setEscrowId] = useState<string>("");
+  const [seller, setSeller] = useState<string>("");
+
 
   useEffect(() => {
     if ((currEpoch != null) && (connection)) {
@@ -141,6 +145,25 @@ export default function AdminPage() {
       const signature = connection.sendRawTransaction(rawTx);
       console.log(signature);
     }
+  }
+
+  const handleClose = async () => {
+    const transaction = new Transaction();
+
+    const closeIx = await createForceCloseIx(
+      program!,
+      wallet!.publicKey,
+      new PublicKey(escrowId),
+      new PublicKey(seller),
+      new PublicKey(inputTokenAddress)
+    );
+    transaction.add(closeIx);
+    transaction.feePayer = wallet!.publicKey;
+    transaction.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
+    const signedTx = await wallet!.signTransaction?.(transaction);
+    const rawTx = signedTx.serialize();
+    const signature = connection.sendRawTransaction(rawTx);
+    console.log(signature);
   }
 
   return (
@@ -267,6 +290,45 @@ export default function AdminPage() {
                 Reset NFT
               </Button>
 
+            </Stack>
+            <Stack spacing={4} direction={{ base: 'column', md: 'column' }} w={'full'}>
+            <Input
+                type={'text'}
+                placeholder={'setEscrowId'}
+                color={useColorModeValue('gray.800', 'gray.200')}
+                bg={useColorModeValue('gray.100', 'gray.600')}
+                rounded={'full'}
+                border={0}
+                _focus={{
+                  bg: useColorModeValue('gray.200', 'gray.800'),
+                  outline: 'none',
+                }}
+                onChange={(e) => setEscrowId(e.target.value)}
+              />
+              <Input
+                type={'text'}
+                placeholder={'setSeller'}
+                color={useColorModeValue('gray.800', 'gray.200')}
+                bg={useColorModeValue('gray.100', 'gray.600')}
+                rounded={'full'}
+                border={0}
+                _focus={{
+                  bg: useColorModeValue('gray.200', 'gray.800'),
+                  outline: 'none',
+                }}
+                onChange={(e) => setSeller(e.target.value)}
+              />
+              <Button
+                bg={'blue.400'}
+                rounded={'full'}
+                color={'white'}
+                flex={'1 0 auto'}
+                _hover={{ bg: 'blue.500' }}
+                _focus={{ bg: 'blue.500' }}
+                onClick={handleClose}
+              >
+                force close seller
+              </Button>
             </Stack>
           </Stack>
         </Flex>

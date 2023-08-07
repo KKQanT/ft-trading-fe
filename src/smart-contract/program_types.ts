@@ -333,6 +333,39 @@ export type FtTrading = {
           "type": "u8"
         }
       ]
+    },
+    {
+      "name": "forceCloseSell",
+      "accounts": [
+        {
+          "name": "sellerEscrow",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": "publicKey"
+        },
+        {
+          "name": "tokenAddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "seller",
+          "type": "publicKey"
+        },
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -768,6 +801,39 @@ export const IDL: FtTrading = {
         },
         {
           "name": "dividendVaultWalletBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "forceCloseSell",
+      "accounts": [
+        {
+          "name": "sellerEscrow",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "escrowId",
+          "type": "publicKey"
+        },
+        {
+          "name": "tokenAddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "seller",
+          "type": "publicKey"
+        },
+        {
+          "name": "bump",
           "type": "u8"
         }
       ]

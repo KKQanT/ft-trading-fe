@@ -5,10 +5,12 @@ import {
 
 import TradePageHeader from './Header'
 import TokenListCard from './TokenListCard'
+import Loading from '../Loading/loading'
 
 export default function TradingPage() {
   return (
     <Container maxW={'5xl'}>
+      <Loading/>
       <Stack
         textAlign={'center'}
         align={'center'}
