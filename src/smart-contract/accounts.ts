@@ -149,7 +149,7 @@ export const getUserShareAccountInfo = async (
   } as userShareAccountType
 }
 
-interface SellerEscrowAccountInfo {
+export interface SellerEscrowAccountInfo {
   address: string,
   escrowId: string,
   seller: string,

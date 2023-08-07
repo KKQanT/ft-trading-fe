@@ -20,8 +20,9 @@ import * as anchor from '@project-serum/anchor';
 import { FtTrading, IDL } from './smart-contract/program_types';
 import { S3T_TRADE_PROGRAM_ID } from './smart-contract/program';
 import { getUserTokens } from './utils/web3';
-import { getAllDividendVaults, getAllWhitelistedTokenInfos } from './smart-contract/accounts';
+import { getAllDividendVaults, getAllSellerEscrowAccountsInfo, getAllWhitelistedTokenInfos } from './smart-contract/accounts';
 import { useProgramData } from './stores/useProgramData';
+import { useLoading } from './stores/useLoading';
 
 
 function App() {
@@ -36,10 +37,12 @@ function App() {
 function WrappedApp() {
   const wallet = useAnchorWallet();
 
-  const { connection, program, setProgram, setUserTokens } = useWeb3()
+  const { connection, program, setProgram, setUserTokens } = useWeb3();
+  const {setLoading} = useLoading();
   const {
     setAllWhiteListedTokenInfo, 
-    setAllDividendVaultInfos
+    setAllDividendVaultInfos,
+    setAllSellEscrowInfo
   } = useProgramData()
 
   useEffect(() => {
@@ -82,11 +85,19 @@ function WrappedApp() {
 
     //due to limit of rpc free tier we have to fetch data like this
 
+    setLoading(true);
+
     const dataArrWL = await getAllWhitelistedTokenInfos(connection);
     setAllWhiteListedTokenInfo(dataArrWL);
 
     const dataArrDV = await getAllDividendVaults(connection);
     setAllDividendVaultInfos(dataArrDV);
+
+    const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);
+    setAllSellEscrowInfo(dataArrSE);
+
+    setLoading(false);
+
   }
 
   return (
