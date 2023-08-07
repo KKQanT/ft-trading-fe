@@ -147,7 +147,7 @@
         },
         {
           "name": "seller",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {

@@ -2,6 +2,10 @@ import { PublicKey, Connection, Keypair, Transaction, SystemProgram } from "@sol
 import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, createInitializeMint2Instruction, createInitializeMintInstruction, createMintToInstruction, getAssociatedTokenAddress, getMinimumBalanceForRentExemptAccount, getMinimumBalanceForRentExemptMint } from "@solana/spl-token";
 import { createCreateMetadataAccountV3Instruction } from "@metaplex-foundation/mpl-token-metadata";
 import { GetProgramAccountsFilter } from "@solana/web3.js";
+
+export const START_TS = 1691217723;
+export const EPOCH_DURATION = 86400
+
 export async function checkAssociatedTokenAccount(
   connection: Connection,
   tokenAddress: PublicKey,
@@ -27,9 +31,6 @@ export const getSolanaTime = async (connection: Connection) => {
   const nowTs = await connection.getBlockTime(slot);
   return nowTs
 }
-
-export const START_TS = 1691217723;
-export const EPOCH_DURATION = 86400
 
 export const METADATA_PROGRAM_ID =
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s";

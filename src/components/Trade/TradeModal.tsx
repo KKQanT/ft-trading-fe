@@ -8,9 +8,14 @@ import {
   ModalCloseButton,
   Button,
   Text,
-  Input,
   Flex,
-  Spacer
+  Spacer,
+  Stack,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+  HStack,
+  VStack,
 } from '@chakra-ui/react';
 
 import {
@@ -26,6 +31,12 @@ import {
 } from '@chakra-ui/react'
 
 import { TokenInfo } from './TokenListCard';
+import shortenHash from '../../utils';
+import { useState } from "react";
+import { createBuyTransaction } from '../../smart-contract/intructions';
+import { useWeb3 } from '../../stores/useWeb3';
+import { PublicKey } from '@solana/web3.js';
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 interface Props {
   isOpen: boolean,
@@ -40,60 +51,64 @@ export default function TradeModal(
     tokenInfo
   }: Props
 ) {
+  const [tokenAmount, setTokenAmount] = useState<number>(0);
+  const { connection, program } = useWeb3()
+  const wallet = useAnchorWallet();
+  const {currEpoch} = useWeb3();
+
+  const handleBuy = async () => {
+    if (program && wallet) {
+      const buyIx = await createBuyTransaction(
+        connection,
+        program,
+        new PublicKey(tokenInfo.escrowId),
+        new PublicKey(tokenInfo.seller),
+        wallet.publicKey,
+        new PublicKey(tokenInfo.tokenAddress),
+        tokenAmount,
+        currEpoch
+      );
+
+      buyIx.feePayer = wallet.publicKey,
+      buyIx.recentBlockhash = (await connection.getRecentBlockhash('max')).blockhash;
+
+      const signedTx = await wallet.signTransaction(buyIx);
+      const wireTx = signedTx.serialize();
+      const signature = await connection.sendRawTransaction(wireTx, {skipPreflight: true});
+      console.log(signature)
+    }
+  }
+
   return (
     <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} size={"xl"}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          {tokenInfo.name} <br />
-          <Text fontSize={"sm"}>{tokenInfo.tokenAddress}</Text>
+      <ModalContent alignSelf={"center"}>
+        <ModalHeader> Purchase Token
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-
-          <TableContainer>
-            <Table variant='striped' colorScheme='teal' size='sm'>
-              <Thead>
-                <Tr>
-                  <Th>To convert</Th>
-                  <Th>into</Th>
-                  <Th isNumeric>multiply by</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>inches</Td>
-                  <Td>millimetres (mm)</Td>
-                  <Td isNumeric>25.4</Td>
-                </Tr>
-                <Tr>
-                  <Td>feet</Td>
-                  <Td>centimetres (cm)</Td>
-                  <Td isNumeric>30.48</Td>
-                </Tr>
-                <Tr>
-                  <Td>yards</Td>
-                  <Td>metres (m)</Td>
-                  <Td isNumeric>0.91444</Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer>
-
+          <VStack alignItems={'start'}>
+            <Text>
+              Token: {tokenInfo.tokenAddress}
+            </Text>
+            <Text>
+              Total: {tokenInfo.pricePerToken * tokenAmount} SOL
+            </Text>
+          </VStack>
         </ModalBody>
         <ModalFooter flexDir={"row"}>
-          <Input 
-          htmlSize={4} 
-          width='auto'
-          placeholder='Amount' 
-          />
-          <Spacer></Spacer>
-          <Flex>
-            <Button colorScheme='blue' mr={3}>
-              Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </Flex>
+          <HStack display={"flex"} justify={"space-between"}>
+            <InputGroup width={"50%"}>
+              <InputLeftAddon children='Amount' />
+              <Input onChange={(e) => setTokenAmount(parseInt(e.target.value))} />
+            </InputGroup>
+            <Flex>
+              <Button colorScheme='orange' mr={3} onClick={handleBuy}>
+                Buy
+              </Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </Flex>
+          </HStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

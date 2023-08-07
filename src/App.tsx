@@ -19,7 +19,7 @@ import { useWeb3 } from './stores/useWeb3';
 import * as anchor from '@project-serum/anchor';
 import { FtTrading, IDL } from './smart-contract/program_types';
 import { S3T_TRADE_PROGRAM_ID } from './smart-contract/program';
-import { getUserTokens } from './utils/web3';
+import { EPOCH_DURATION, START_TS, getSolanaTime, getUserTokens } from './utils/web3';
 import { getAllDividendVaults, getAllSellerEscrowAccountsInfo, getAllWhitelistedTokenInfos } from './smart-contract/accounts';
 import { useProgramData } from './stores/useProgramData';
 import { useLoading } from './stores/useLoading';
@@ -37,7 +37,14 @@ function App() {
 function WrappedApp() {
   const wallet = useAnchorWallet();
 
-  const { connection, program, setProgram, setUserTokens } = useWeb3();
+  const { 
+    connection, 
+    program, 
+    setProgram, 
+    setUserTokens, 
+    currEpoch, 
+    setCurrEpoch
+   } = useWeb3();
   const {setLoading} = useLoading();
   const {
     setAllWhiteListedTokenInfo, 
@@ -61,6 +68,15 @@ function WrappedApp() {
       setProgram(program);
     }
   }, [wallet?.publicKey]);
+
+  useEffect(() => {
+    getSolanaTime(connection)
+      .then((solanaTime) => {
+        console.log('solanaTime: ', solanaTime)
+        const epoch = Math.floor((solanaTime! - START_TS) / EPOCH_DURATION);
+        setCurrEpoch(epoch);
+      })
+  }, [])
 
   useEffect(() => {
     if (wallet?.publicKey && connection) {

@@ -8,7 +8,9 @@ interface UseWeb3 {
   program: anchor.Program<anchor.Idl> | null,
   setProgram: (val: anchor.Program<anchor.Idl>) => void,
   userTokens: UserTokenType[],
-  setUserTokens: (dataArr: UserTokenType[]) => void
+  setUserTokens: (dataArr: UserTokenType[]) => void,
+  currEpoch: number,
+  setCurrEpoch: (val: number) => void,
 }
 
 const RPC = import.meta.env.VITE_REACR_APP_RPC
@@ -26,6 +28,12 @@ export const useWeb3 = create<UseWeb3>((set) => (
     setUserTokens: (dataArr: UserTokenType[]) => {
       set({
         userTokens: dataArr
+      })
+    },
+    currEpoch: 0,
+    setCurrEpoch: (val: number) => {
+      set({
+        currEpoch: val
       })
     }
   }

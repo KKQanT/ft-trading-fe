@@ -147,7 +147,7 @@ export type FtTrading = {
         },
         {
           "name": "seller",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -618,7 +618,7 @@ export const IDL: FtTrading = {
         },
         {
           "name": "seller",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {

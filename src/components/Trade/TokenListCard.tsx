@@ -56,32 +56,36 @@ const AggregratedTokenData: AggregratedTokenDataProps[] = [
 ]
 
 export interface TokenInfo {
-  image: string,
-  name: string,
-  tokenAddress: string
+  tokenAddress: string,
+  pricePerToken: number,
+  escrowId: string,
+  seller: string
 }
 
 const TokenListCard = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedToken, setToken] = useState<TokenInfo>({
-    image: "",
-    name: "",
-    tokenAddress: ""
+    tokenAddress: "",
+    pricePerToken: 0,
+    escrowId: "",
+    seller: ""
   });
   const [tokenHasSet, setTokenHasSet] = useState<boolean>(false);
   const { allSellEscrowInfo } = useProgramData()
 
   const openTrade = (
-    image: string,
-    name: string,
-    tokenAddress: string
+    tokenAddress: string,
+    pricePerToken: number,
+    escrowId: string,
+    seller: string
   ) => {
     onOpen()
     setToken({
-      image: image,
-      name: name,
-      tokenAddress: tokenAddress
+      tokenAddress: tokenAddress,
+      pricePerToken: pricePerToken,
+      escrowId: escrowId,
+      seller: seller
     })
   }
 
@@ -125,9 +129,11 @@ const TokenListCard = () => {
                         onClick={
                           () =>
                             openTrade(
-                              "",
-                              "",
-                              item.address)
+                              item.tokenAddress,
+                              item.pricePerToken,
+                              item.escrowId,
+                              item.seller
+                            )
                         }>
                         Trade
                       </Button>

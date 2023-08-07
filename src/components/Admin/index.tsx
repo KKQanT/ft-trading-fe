@@ -44,7 +44,7 @@ export default function AdminPage() {
   const RPC = import.meta.env.VITE_REACR_APP_RPC
   const { connection, program } = useWeb3();
 
-  const [currEpoch, setEpoch] = useState<number | null>(null);
+  const {currEpoch} = useWeb3();
   const [startEpoch, setStartEpoch] = useState<number>(0);
   const [endEpoch, setEndEpoch] = useState<number>(1);
   const [currentDividendVaulInfo, setCurrentDividendVaultInfo] = useState<DividendVaultType | null>(null);
@@ -67,15 +67,6 @@ export default function AdminPage() {
   useEffect(() => {
     console.log("currentDividendVaulInfo: ", currentDividendVaulInfo)
   }, [currentDividendVaulInfo])
-
-  useEffect(() => {
-    getSolanaTime(connection)
-      .then((solanaTime) => {
-        console.log('solanaTime: ', solanaTime)
-        const epoch = Math.floor((solanaTime! - START_TS) / EPOCH_DURATION);
-        setEpoch(epoch);
-      })
-  }, [])
 
   const handleCreateVault = async () => {
     console.log("start: ", startEpoch);
