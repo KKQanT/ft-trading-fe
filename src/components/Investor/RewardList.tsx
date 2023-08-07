@@ -30,10 +30,8 @@ const RewardList = (
 
   const { allDividendVaultInfos } = useProgramData();
   const { currEpoch } = useWeb3()
-
-  const [rewardData, setRewardData] = useState<RewardData[]>([])
-
-
+  const [rewardData, setRewardData] = useState<RewardData[]>([]);
+  
   useEffect(() => {
     const prepData = allDividendVaultInfos.filter(
       (item) => item.epoch <= currEpoch
@@ -49,44 +47,44 @@ const RewardList = (
           ...item,
           rewardShare: rewardShare,
           userSolDividendAmount: (
-            item.totalShare == 0 ? 0 : rewardShare/ item.totalShare * item.solDividendAmount
+            item.totalShare == 0 ? 0 : rewardShare / item.totalShare * item.solDividendAmount
           ),
-          userSharePct: rewardShare == 0 ? 0 : Math.round(rewardShare/item.totalShare * 100)
-  };
-})
-    .sort((a, b) => b.epoch - a.epoch);
-setRewardData(prepData);
-console.log("prepData: ", prepData)
+          userSharePct: rewardShare == 0 ? 0 : Math.round(rewardShare / item.totalShare * 100)
+        };
+      })
+      .sort((a, b) => b.epoch - a.epoch);
+    setRewardData(prepData);
+    console.log("prepData: ", prepData)
   }, [allDividendVaultInfos, userAllShareAccounts])
 
-return (
-  <TableContainer>
-    <Table variant={"striped"} colorScheme={"orange"}>
-      <Thead>
-        <Tr>
-          <Th isNumeric>Epoch</Th>
-          <Th>address</Th>
-          <Th>Total Dividend</Th>
-          <Th>Your share</Th>
-          <Th> </Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {rewardData.map((item) => {
-          return (
-            <Tr>
-              <Td>{item.epoch}</Td>
-              <Td>{shortenHash(item.address)}</Td>
-              <Td>{item.solDividendAmount} {'SOL'}</Td>
-              <Td>{item.userSolDividendAmount} {"SOL"} {`(${(item.userSharePct)}%)`}</Td>
-              <Td ><Button>Claim</Button></Td>
-            </Tr>)
-        })}
+  return (
+    <TableContainer>
+      <Table variant={"striped"} colorScheme={"orange"}>
+        <Thead>
+          <Tr>
+            <Th isNumeric>Epoch</Th>
+            <Th>address</Th>
+            <Th>Total Dividend</Th>
+            <Th>Your share</Th>
+            <Th> </Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {rewardData.map((item) => {
+            return (
+              <Tr>
+                <Td>{item.epoch}</Td>
+                <Td>{shortenHash(item.address)}</Td>
+                <Td>{item.solDividendAmount} {'SOL'}</Td>
+                <Td>{item.userSolDividendAmount} {"SOL"} {`(${(item.userSharePct)}%)`}</Td>
+                <Td ><Button>Claim</Button></Td>
+              </Tr>)
+          })}
 
-      </Tbody>
-    </Table>
-  </TableContainer>
-)
+        </Tbody>
+      </Table>
+    </TableContainer>
+  )
 }
 
 export default RewardList;
