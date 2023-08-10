@@ -3,7 +3,7 @@ import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, 
 import { createCreateMetadataAccountV3Instruction } from "@metaplex-foundation/mpl-token-metadata";
 import { GetProgramAccountsFilter } from "@solana/web3.js";
 
-export const START_TS = 1691217723;
+export const START_TS = 1691587000 - 86400*3;
 export const EPOCH_DURATION = 86400
 
 export async function checkAssociatedTokenAccount(

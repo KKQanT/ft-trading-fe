@@ -9,13 +9,12 @@ import {
   Button,
 } from '@chakra-ui/react'
 import { useProgramData } from '../../stores/useProgramData';
-import { useWeb3 } from '../../stores/useWeb3';
 import { useEffect, useState } from 'react';
 import { DividendVaultType, userShareAccountType } from '../../smart-contract/accounts';
-import shortenHash from '../../utils';
+import {shortenHash} from '../../utils';
 
 interface RewardData extends DividendVaultType {
-  rewardShare: number,
+  numShare: number,
   userSolDividendAmount: number,
   userSharePct: number
 }
@@ -26,27 +25,30 @@ const RewardList = (
 ) => {
 
   const { allDividendVaultInfos } = useProgramData();
-  const { currEpoch } = useWeb3()
   const [rewardData, setRewardData] = useState<RewardData[]>([]);
+
   
   useEffect(() => {
+
+    const claimableEpochs = userAllShareAccounts.map((item) => {return item.epoch});
+
     const prepData = allDividendVaultInfos.filter(
-      (item) => item.epoch <= currEpoch
+      (item) => claimableEpochs.includes(item.epoch)
     )
       .map((item) => {
         const epoch = item.epoch;
         const filtered = userAllShareAccounts.filter((item) => item.epoch == epoch);
-        let rewardShare = 0;
+        let numShare = 0;
         if (filtered.length > 0) {
-          rewardShare = filtered[0].rewardShare;
+          numShare = filtered[0].nShare;
         }
         return {
           ...item,
-          rewardShare: rewardShare,
+          numShare: numShare,
           userSolDividendAmount: (
-            item.totalShare == 0 ? 0 : rewardShare / item.totalShare * item.solDividendAmount
+            item.totalNShare == 0 ? 0 : numShare / item.totalNShare * item.solDividendAmount
           ),
-          userSharePct: rewardShare == 0 ? 0 : Math.round(rewardShare / item.totalShare * 100)
+          userSharePct: numShare == 0 ? 0 : Math.round(numShare / item.totalNShare * 100)
         };
       })
       .sort((a, b) => b.epoch - a.epoch);
@@ -74,7 +76,7 @@ const RewardList = (
                 <Td>{shortenHash(item.address)}</Td>
                 <Td>{item.solDividendAmount} {'SOL'}</Td>
                 <Td>{item.userSolDividendAmount} {"SOL"} {`(${(item.userSharePct)}%)`}</Td>
-                <Td ><Button>Claim</Button></Td>
+                <Td ><Button >Claim</Button></Td>
               </Tr>)
           })}
 

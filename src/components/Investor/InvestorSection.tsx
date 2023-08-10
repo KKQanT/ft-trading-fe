@@ -1,4 +1,4 @@
-import { Container, Heading, Stack, Text } from "@chakra-ui/react";
+import {  Container, Heading, Stack, Text } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import NFTList from "./NFTList";
 import RewardList from "./RewardList";
@@ -8,6 +8,8 @@ import { useWeb3 } from "../../stores/useWeb3"
 import { useEffect, useState } from "react";
 import { getUserAllShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
 import { useLoading } from "../../stores/useLoading";
+import EpochStats from "./EpochStats";
+
 
 const InvestorSection = () => {
 
@@ -15,7 +17,7 @@ const InvestorSection = () => {
 
   const { currEpoch, connection } = useWeb3();
   const [userAllShareAccounts, setUserAllShareAccounts] = useState<userShareAccountType[]>([]);
-  const [_userShareAccount, setUserShareAccount] = useState<userShareAccountType|null>(null);
+  const [userShareAccount, setUserShareAccount] = useState<userShareAccountType|null>(null);
   const {setLoading} = useLoading();
 
   useEffect(() => {
@@ -55,11 +57,11 @@ const InvestorSection = () => {
               Investor
             </Text>
           </Heading>
-
+          <EpochStats userShareAccount={userShareAccount}/>
           <Tabs variant='soft-rounded' colorScheme='orange' w={[300, 400, 700]}>
             <TabList>
               <Tab>S3T Trade Stock</Tab>
-              <Tab>Dividend</Tab>
+              <Tab>Claimable Dividend</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>

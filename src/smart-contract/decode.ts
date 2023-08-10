@@ -4,19 +4,19 @@ export const dividendVaultSchema = borsh.struct([
     borsh.u64('discriminator'),
     borsh.u64('epoch'),
     borsh.u64('lamport_dividend_amount'),
-    borsh.u64('total_share'),
+    borsh.u64('total_n_share'),
 ])
 
 export const whitelistedNFTSchema = borsh.struct([
     borsh.u64('discriminator'),
     borsh.publicKey('token_address'),
-    borsh.i64("last_claim_ts")
+    borsh.i64("last_claimed_epoch")
 ])
 
 export const userShareAccountSchema = borsh.struct([
     borsh.u64('discriminator'),
     borsh.u64('epoch'),
-    borsh.u64('reward_share'),
+    borsh.u64('n_share'),
     borsh.publicKey('owner'),
 ])
 

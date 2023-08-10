@@ -15,7 +15,7 @@ import {
 
 import { Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { RepeatIcon } from '@chakra-ui/icons'
-import shortenHash from '../../utils'
+import {shortenHash} from '../../utils'
 import TradeModal from './TradeModal'
 import { useState, useEffect } from "react";
 import { useProgramData } from '../../stores/useProgramData'

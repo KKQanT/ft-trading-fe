@@ -7,12 +7,13 @@ import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
 import { METADATA_PROGRAM_ID, getSolanaTime } from "../../utils/web3";
 import axios from "axios";
-import shortenHash from "../../utils";
+import {shortenHash} from "../../utils";
 
 interface PreprocessedWlTokenDataType {
   wlAccountAddress: string,
   tokenAddress: string,
-  shareClaimable: number,
+  isClaimable: boolean,
+  lastClaimedEpoch: number,
   imgUri: string
 }
 
@@ -21,6 +22,7 @@ const NFTList = () => {
   const { userTokens, connection } = useWeb3();
   const { allWhiteListedTokenInfo } = useProgramData();
   const [preprocessedTokensData, setPreprocessedTokensData] = useState<PreprocessedWlTokenDataType[]>([]);
+  const {currEpoch} = useWeb3();
 
   useEffect(() => {
     preprocessTokensData();
@@ -34,7 +36,6 @@ const NFTList = () => {
       .filter((item) => userTokensAddress.includes(item.tokenAddress));
 
     const userWlToken: PreprocessedWlTokenDataType[] = [];
-    const solanaCurrTime = await getSolanaTime(connection);
 
     for (const item of filteredWlTokensInfo) {
       const [metadataAddress] = await PublicKey.findProgramAddress(
@@ -52,7 +53,8 @@ const NFTList = () => {
       userWlToken.push({
         wlAccountAddress: item.address,
         tokenAddress: item.tokenAddress,
-        shareClaimable: solanaCurrTime! - item.lastClaimedTs,
+        lastClaimedEpoch: item.lastClaimedEpoch,
+        isClaimable: (item.lastClaimedEpoch < currEpoch) ? true : false ,
         imgUri: imgUri
       })
     }
@@ -77,8 +79,8 @@ const NFTList = () => {
             </CardHeader>
             <CardBody>
               <Image mb={"1rem"} src={item.imgUri} />
-              <Text mb={"1rem"}>claimable share: {item.shareClaimable}</Text>
-              <Button >Claim</Button>
+              <Text mb={"1rem"}>last claimed (epoch): {item.lastClaimedEpoch}</Text>
+              <Button disabled={!item.isClaimable} >Claim</Button>
             </CardBody>
           </Card>
         )

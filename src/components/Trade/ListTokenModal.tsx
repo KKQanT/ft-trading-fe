@@ -28,7 +28,7 @@ import {
 
 
 import { useWeb3 } from '../../stores/useWeb3';
-import shortenHash from '../../utils';
+import {shortenHash} from '../../utils';
 import { useState } from "react";
 import { createSellTransaction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';

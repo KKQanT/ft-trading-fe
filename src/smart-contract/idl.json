@@ -379,8 +379,8 @@
             "type": "u64"
           },
           {
-            "name": "rewardShare",
-            "type": "u64"
+            "name": "nShare",
+            "type": "u16"
           },
           {
             "name": "owner",
@@ -403,8 +403,8 @@
             "type": "u64"
           },
           {
-            "name": "totalShare",
-            "type": "u64"
+            "name": "totalNShare",
+            "type": "u16"
           }
         ]
       }
@@ -454,8 +454,8 @@
             "type": "publicKey"
           },
           {
-            "name": "lastClaimTs",
-            "type": "i64"
+            "name": "lastClaimedEpoch",
+            "type": "u64"
           }
         ]
       }
@@ -466,5 +466,8 @@
       "code": 6000,
       "name": "Error"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "S3T2JExjrp6a48LNcxNxBHKa1GTB3bXRmwH3wepB5KQ"
+  }
 }

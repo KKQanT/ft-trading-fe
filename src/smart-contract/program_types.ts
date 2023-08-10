@@ -379,8 +379,8 @@ export type FtTrading = {
             "type": "u64"
           },
           {
-            "name": "rewardShare",
-            "type": "u64"
+            "name": "nShare",
+            "type": "u16"
           },
           {
             "name": "owner",
@@ -403,8 +403,8 @@ export type FtTrading = {
             "type": "u64"
           },
           {
-            "name": "totalShare",
-            "type": "u64"
+            "name": "totalNShare",
+            "type": "u16"
           }
         ]
       }
@@ -454,8 +454,8 @@ export type FtTrading = {
             "type": "publicKey"
           },
           {
-            "name": "lastClaimTs",
-            "type": "i64"
+            "name": "lastClaimedEpoch",
+            "type": "u64"
           }
         ]
       }
@@ -850,8 +850,8 @@ export const IDL: FtTrading = {
             "type": "u64"
           },
           {
-            "name": "rewardShare",
-            "type": "u64"
+            "name": "nShare",
+            "type": "u16"
           },
           {
             "name": "owner",
@@ -874,8 +874,8 @@ export const IDL: FtTrading = {
             "type": "u64"
           },
           {
-            "name": "totalShare",
-            "type": "u64"
+            "name": "totalNShare",
+            "type": "u16"
           }
         ]
       }
@@ -925,8 +925,8 @@ export const IDL: FtTrading = {
             "type": "publicKey"
           },
           {
-            "name": "lastClaimTs",
-            "type": "i64"
+            "name": "lastClaimedEpoch",
+            "type": "u64"
           }
         ]
       }

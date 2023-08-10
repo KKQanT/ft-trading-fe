@@ -24,7 +24,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { createMintTokenTransaction } from '../../utils/web3';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import shortenHash from '../../utils';
+import {shortenHash} from '../../utils';
 import { useWeb3 } from '../../stores/useWeb3';
 
 export default function TokenService() {

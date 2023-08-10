@@ -7,7 +7,7 @@ export interface DividendVaultType {
   address: string,
   epoch: number,
   solDividendAmount: number,
-  totalShare: number
+  totalNShare: number
 }
 
 
@@ -30,7 +30,7 @@ export const getDividendVaultInfoByEpoch = async (
     address: dividendVault.toBase58(),
     epoch: decodedData.epoch.toNumber(),
     solDividendAmount: decodedData.lamport_dividend_amount.toNumber() / LAMPORTS_PER_SOL,
-    totalShare: decodedData.total_share.toNumber()
+    totalNShare: decodedData.total_n_share.toNumber()
   } as DividendVaultType
 }
 
@@ -42,7 +42,7 @@ export const getAllDividendVaults = async (
     {
       filters: [
         {
-          dataSize: 8 + 8 * 3
+          dataSize: 8 + 8 + 8 + 2
         },
       ]
     }
@@ -55,7 +55,7 @@ export const getAllDividendVaults = async (
         address: item.pubkey.toBase58(),
         epoch: decodedData.epoch.toNumber(),
         solDividendAmount: decodedData.lamport_dividend_amount.toNumber() / LAMPORTS_PER_SOL,
-        totalShare: decodedData.total_share.toNumber()
+        totalNShare: decodedData.total_n_share.toNumber()
       } as DividendVaultType
     });
     return decodedAccounts as DividendVaultType[]
@@ -67,7 +67,7 @@ export const getAllDividendVaults = async (
 export interface WhitelistedTokenType {
   address: string,
   tokenAddress: string,
-  lastClaimedTs: number
+  lastClaimedEpoch: number
 }
 
 export const getWhitelistedTokenInfo = async (
@@ -88,7 +88,7 @@ export const getWhitelistedTokenInfo = async (
   return {
     address: whitelistNft.toBase58(),
     tokenAddress: tokenAddress.toBase58(),
-    lastClaimedTs: decodedData.last_claim_ts.toNumber()
+    lastClaimedEpoch: decodedData.last_claimed_epoch.toNumber()
   } as WhitelistedTokenType
 }
 
@@ -112,7 +112,7 @@ export const getAllWhitelistedTokenInfos = async (
       return {
         address: item.pubkey.toBase58(),
         tokenAddress: decodedData.token_address.toBase58(),
-        lastClaimedTs: decodedData.last_claim_ts.toNumber()
+        lastClaimedEpoch: decodedData.last_claimed_epoch.toNumber()
       } as WhitelistedTokenType
     });
     return decodedAccounts as WhitelistedTokenType[]
@@ -124,7 +124,7 @@ export const getAllWhitelistedTokenInfos = async (
 export interface userShareAccountType {
   address: string,
   epoch: number,
-  rewardShare: number
+  nShare: number
 }
 
 export const getUserShareAccountInfo = async (
@@ -146,7 +146,7 @@ export const getUserShareAccountInfo = async (
   return {
     address: userShareAccount.toBase58(),
     epoch: decodedData.epoch.toNumber(),
-    rewardShare: decodedData.reward_share.toNumber(),
+    nShare: decodedData.n_share.toNumber(),
   } as userShareAccountType
 }
 
@@ -158,7 +158,7 @@ export const getUserAllShareAccountInfo = async (
     {
       filters: [
         {
-          dataSize: 8 + 8 + 8 + 32
+          dataSize: 8 + 8 + 2 + 32
         },
       ]
     }
@@ -170,13 +170,13 @@ export const getUserAllShareAccountInfo = async (
       return {
         address: item.pubkey.toBase58(),
         epoch: decodedData.epoch.toNumber() as number,
-        rewardShare: decodedData.reward_share.toNumber() as number,
-      }
+        nShare: decodedData.n_share.toNumber() as number,
+      } as userShareAccountType
     });
 
     console.log(decodedAccounts)
 
-    return decodedAccounts
+    return decodedAccounts as userShareAccountType[]
 
   } else {
     return [] as userShareAccountType[]
