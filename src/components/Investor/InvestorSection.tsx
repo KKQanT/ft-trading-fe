@@ -5,8 +5,8 @@ import RewardList from "./RewardList";
 import Loading from "../Loading/loading";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { useWeb3 } from "../../stores/useWeb3"
-import { useEffect, useState } from "react";
-import { getAllDividendVaults, getUserAllShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
+import { useEffect } from "react";
+import { getAllDividendVaults, getUserAllShareAccountInfo } from "../../smart-contract/accounts";
 import { useLoading } from "../../stores/useLoading";
 import EpochStats from "./EpochStats";
 import { useProgramData } from "../../stores/useProgramData";

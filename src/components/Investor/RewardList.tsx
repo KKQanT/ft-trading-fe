@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { useProgramData } from '../../stores/useProgramData';
 import { useEffect, useState } from 'react';
-import { DividendVaultType, getAllDividendVaults, getUserAllShareAccountInfo, userShareAccountType } from '../../smart-contract/accounts';
+import { DividendVaultType, getAllDividendVaults, getUserAllShareAccountInfo } from '../../smart-contract/accounts';
 import { shortenHash } from '../../utils';
 import { useWeb3 } from '../../stores/useWeb3';
 import { createClaimDividendIntruction } from '../../smart-contract/intructions';
