@@ -11,7 +11,8 @@ import {
 import { useProgramData } from '../../stores/useProgramData';
 import { useEffect, useState } from 'react';
 import { DividendVaultType, userShareAccountType } from '../../smart-contract/accounts';
-import {shortenHash} from '../../utils';
+import { shortenHash } from '../../utils';
+import { useWeb3 } from '../../stores/useWeb3';
 
 interface RewardData extends DividendVaultType {
   numShare: number,
@@ -23,11 +24,11 @@ const RewardList = () => {
 
   const { allDividendVaultInfos, userAllShareAccounts } = useProgramData();
   const [rewardData, setRewardData] = useState<RewardData[]>([]);
+  const {currEpoch} = useWeb3();
 
-  
   useEffect(() => {
 
-    const claimableEpochs = userAllShareAccounts.map((item) => {return item.epoch});
+    const claimableEpochs = userAllShareAccounts.map((item) => { return item.epoch });
 
     const prepData = allDividendVaultInfos.filter(
       (item) => claimableEpochs.includes(item.epoch)
@@ -73,7 +74,9 @@ const RewardList = () => {
                 <Td>{shortenHash(item.address)}</Td>
                 <Td>{item.solDividendAmount} {'SOL'}</Td>
                 <Td>{item.userSolDividendAmount} {"SOL"} {`(${(item.userSharePct)}%)`}</Td>
-                <Td ><Button >Claim</Button></Td>
+                <Td >
+                  <Button isDisabled={item.epoch == currEpoch} >Claim</Button>
+                </Td>
               </Tr>)
           })}
 

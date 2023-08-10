@@ -145,7 +145,7 @@ const NFTList = () => {
                 <Image mb={"1rem"} src={item.imgUri} />
                 <Text mb={"1rem"}>last claimed (epoch): {item.lastClaimedEpoch}</Text>
                 <Button
-                  disabled={!item.isClaimable}
+                  isDisabled={!item.isClaimable}
                   onClick={() => handleClaim(new PublicKey(item.tokenAddress))}
                 >
                   Claim
