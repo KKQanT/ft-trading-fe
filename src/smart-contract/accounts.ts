@@ -30,7 +30,7 @@ export const getDividendVaultInfoByEpoch = async (
     address: dividendVault.toBase58(),
     epoch: decodedData.epoch.toNumber(),
     solDividendAmount: decodedData.lamport_dividend_amount.toNumber() / LAMPORTS_PER_SOL,
-    totalNShare: decodedData.total_n_share.toNumber()
+    totalNShare: decodedData.total_n_share
   } as DividendVaultType
 }
 
@@ -55,7 +55,7 @@ export const getAllDividendVaults = async (
         address: item.pubkey.toBase58(),
         epoch: decodedData.epoch.toNumber(),
         solDividendAmount: decodedData.lamport_dividend_amount.toNumber() / LAMPORTS_PER_SOL,
-        totalNShare: decodedData.total_n_share.toNumber()
+        totalNShare: decodedData.total_n_share
       } as DividendVaultType
     });
     return decodedAccounts as DividendVaultType[]
@@ -146,12 +146,13 @@ export const getUserShareAccountInfo = async (
   return {
     address: userShareAccount.toBase58(),
     epoch: decodedData.epoch.toNumber(),
-    nShare: decodedData.n_share.toNumber(),
+    nShare: decodedData.n_share as number
   } as userShareAccountType
 }
 
 export const getUserAllShareAccountInfo = async (
   connection: Connection,
+  owner: PublicKey
 ) => {
   const accounts = await connection.getParsedProgramAccounts(
     S3T_TRADE_PROGRAM_ID,
@@ -160,6 +161,12 @@ export const getUserAllShareAccountInfo = async (
         {
           dataSize: 8 + 8 + 2 + 32
         },
+        {
+          memcmp: {
+            offset: 8 + 8 + 2,
+            bytes: owner.toBase58()
+          }
+        }
       ]
     }
   );
@@ -170,7 +177,7 @@ export const getUserAllShareAccountInfo = async (
       return {
         address: item.pubkey.toBase58(),
         epoch: decodedData.epoch.toNumber() as number,
-        nShare: decodedData.n_share.toNumber() as number,
+        nShare: decodedData.n_share as number
       } as userShareAccountType
     });
 

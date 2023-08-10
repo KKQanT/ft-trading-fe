@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { DividendVaultType, SellerEscrowAccountInfo, WhitelistedTokenType } from "../smart-contract/accounts";
+import { DividendVaultType, SellerEscrowAccountInfo, WhitelistedTokenType, userShareAccountType } from "../smart-contract/accounts";
 
 interface UseProgramData {
   allWhiteListedTokenInfo: WhitelistedTokenType[],
@@ -8,6 +8,10 @@ interface UseProgramData {
   setAllDividendVaultInfos: (dataArr: DividendVaultType[]) => void,
   allSellEscrowInfo: SellerEscrowAccountInfo[],
   setAllSellEscrowInfo: (dataArr: SellerEscrowAccountInfo[]) => void,
+  userAllShareAccounts: userShareAccountType[],
+  setUserAllShareAccounts: (dataArr: userShareAccountType[]) => void,
+  userShareAccount: userShareAccountType|null,
+  setUserShareAccount: (dataArr: userShareAccountType|null) => void,
 }
 
 export const useProgramData = create<UseProgramData>((set) => (
@@ -30,5 +34,17 @@ export const useProgramData = create<UseProgramData>((set) => (
         allSellEscrowInfo: dataArr
       })
     },
+    userAllShareAccounts: [],
+    setUserAllShareAccounts: (dataArr: userShareAccountType[]) => {
+      set({
+        userAllShareAccounts: dataArr
+      })
+    },
+    userShareAccount: null,
+    setUserShareAccount: (val: userShareAccountType|null) => {
+      set({
+        userShareAccount: val
+      })
+    }
   }
 ))

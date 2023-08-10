@@ -19,12 +19,9 @@ interface RewardData extends DividendVaultType {
   userSharePct: number
 }
 
-const RewardList = (
-  { userAllShareAccounts }:
-    { userAllShareAccounts: userShareAccountType[] }
-) => {
+const RewardList = () => {
 
-  const { allDividendVaultInfos } = useProgramData();
+  const { allDividendVaultInfos, userAllShareAccounts } = useProgramData();
   const [rewardData, setRewardData] = useState<RewardData[]>([]);
 
   

@@ -10,22 +10,17 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 
-import { FiServer } from 'react-icons/fi';
-import { GoLocation } from 'react-icons/go';
-import { FaClock, FaMoneyBillAlt, FaCoins, FaDollarSign } from "react-icons/fa";
+import { FaClock, FaDollarSign } from "react-icons/fa";
 import { useWeb3 } from '../../stores/useWeb3';
 import { useProgramData } from '../../stores/useProgramData';
-import { userShareAccountType } from '../../smart-contract/accounts';
 import { useEffect, useState } from "react"
+import { roundToFourDigits } from '../../utils';
 
-interface EpochStatsProps {
-  userShareAccount: userShareAccountType | null
-}
 
-const EpochStats = ({ userShareAccount }: EpochStatsProps) => {
+const EpochStats = () => {
 
   const { currEpoch } = useWeb3();
-  const { allDividendVaultInfos } = useProgramData();
+  const { allDividendVaultInfos, userShareAccount } = useProgramData();
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [userNumShare, setUserNumShare] = useState<number>(0);
   const [totalNumShare, setTotalNumShare] = useState<number>(0);
@@ -34,14 +29,20 @@ const EpochStats = ({ userShareAccount }: EpochStatsProps) => {
   useEffect(() => {
     const currEpochData = allDividendVaultInfos.filter((item) => item.epoch == currEpoch)[0];
     const totalIncome_ = currEpochData.solDividendAmount;
+    const totalNShare_ = currEpochData.totalNShare;
     setTotalIncome(totalIncome_);
+    setTotalNumShare(totalNShare_);
+    console.log('run useEffect: ', userShareAccount)
     if (userShareAccount) {
-      const totalNShare_ = currEpochData.totalNShare;
+      console.log('run useEffect userShareAccount')
+
       const userNShare_ = userShareAccount.nShare;
       const userIncome_ = (totalNShare_ == 0) ? 0 : totalIncome_ * (userNShare_ / totalNShare_)
-      setTotalNumShare(totalNShare_);
       setUserNumShare(userNShare_);
       setUserIncome(userIncome_);
+    } else {
+      setUserNumShare(0);
+      setUserIncome(0);
     }
   }, [userShareAccount, allDividendVaultInfos])
 
@@ -56,7 +57,7 @@ const EpochStats = ({ userShareAccount }: EpochStatsProps) => {
         />
         <EpochStatCard
           title={'Your Income'}
-          stat={`${userIncome} sol (${userNumShare}/${totalNumShare})`}
+          stat={`${roundToFourDigits(userIncome)} sol (${userNumShare}/${totalNumShare})`}
           icon={<FaDollarSign size={'2em'} />}
           />
       </SimpleGrid>

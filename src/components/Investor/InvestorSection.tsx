@@ -1,4 +1,4 @@
-import {  Container, Heading, Stack, Text } from "@chakra-ui/react";
+import { Container, Heading, Stack, Text } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import NFTList from "./NFTList";
 import RewardList from "./RewardList";
@@ -6,9 +6,10 @@ import Loading from "../Loading/loading";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { useWeb3 } from "../../stores/useWeb3"
 import { useEffect, useState } from "react";
-import { getUserAllShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
+import { getAllDividendVaults, getUserAllShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
 import { useLoading } from "../../stores/useLoading";
 import EpochStats from "./EpochStats";
+import { useProgramData } from "../../stores/useProgramData";
 
 
 const InvestorSection = () => {
@@ -16,27 +17,34 @@ const InvestorSection = () => {
   const wallet = useAnchorWallet();
 
   const { currEpoch, connection } = useWeb3();
-  const [userAllShareAccounts, setUserAllShareAccounts] = useState<userShareAccountType[]>([]);
-  const [userShareAccount, setUserShareAccount] = useState<userShareAccountType|null>(null);
-  const {setLoading} = useLoading();
+  const {  setUserAllShareAccounts, setUserShareAccount, setAllDividendVaultInfos } = useProgramData();
+  const { setLoading } = useLoading();
 
   useEffect(() => {
-
     if (wallet?.publicKey) {
-      getUserShareAccounts();
+      reloadData();
     }
-
   }, [wallet?.publicKey])
 
-  const getUserShareAccounts = async () => {
+  const reloadData = async () => {
+
     setLoading(true);
-    const accounts = await getUserAllShareAccountInfo(connection);
+
+    const dataArrDV = await getAllDividendVaults(connection);
+    setAllDividendVaultInfos(dataArrDV);
+
+    const accounts = await getUserAllShareAccountInfo(connection, wallet!.publicKey);
+    console.log("AllShareAccounts: ", accounts)
     setUserAllShareAccounts(accounts);
     const filtered = accounts.filter((item) => item.epoch == currEpoch);
     if (filtered.length > 0) {
       setUserShareAccount(filtered[0])
+    } else {
+      setUserShareAccount(null)
     }
+
     setLoading(false);
+
   }
 
   return (
@@ -57,7 +65,7 @@ const InvestorSection = () => {
               Investor
             </Text>
           </Heading>
-          <EpochStats userShareAccount={userShareAccount}/>
+          <EpochStats />
           <Tabs variant='soft-rounded' colorScheme='orange' w={[300, 400, 700]}>
             <TabList>
               <Tab>S3T Trade Stock</Tab>
@@ -68,7 +76,7 @@ const InvestorSection = () => {
                 <NFTList />
               </TabPanel>
               <TabPanel>
-                <RewardList userAllShareAccounts={userAllShareAccounts}/>
+                <RewardList />
               </TabPanel>
             </TabPanels>
 

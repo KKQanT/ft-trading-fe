@@ -4,10 +4,14 @@ import { useWeb3 } from "../../stores/useWeb3";
 import { useProgramData } from "../../stores/useProgramData";
 import { useEffect, useState } from "react";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import { METADATA_PROGRAM_ID, getSolanaTime } from "../../utils/web3";
 import axios from "axios";
-import {shortenHash} from "../../utils";
+import { shortenHash } from "../../utils";
+import { getAllDividendVaults, getUserAllShareAccountInfo, userShareAccountType } from "../../smart-contract/accounts";
+import { createClaimShareInstruction, createCreateShareAccountIntruction } from "../../smart-contract/intructions";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import { useLoading } from "../../stores/useLoading";
 
 interface PreprocessedWlTokenDataType {
   wlAccountAddress: string,
@@ -19,10 +23,18 @@ interface PreprocessedWlTokenDataType {
 
 const NFTList = () => {
 
-  const { userTokens, connection } = useWeb3();
-  const { allWhiteListedTokenInfo } = useProgramData();
+  const { userTokens, connection, program } = useWeb3();
+  const {
+    allWhiteListedTokenInfo,
+    userShareAccount,
+    setUserAllShareAccounts,
+    setUserShareAccount,
+    setAllDividendVaultInfos
+  } = useProgramData();
   const [preprocessedTokensData, setPreprocessedTokensData] = useState<PreprocessedWlTokenDataType[]>([]);
-  const {currEpoch} = useWeb3();
+  const { currEpoch } = useWeb3();
+  const { setLoading } = useLoading();
+  const wallet = useAnchorWallet();
 
   useEffect(() => {
     preprocessTokensData();
@@ -54,12 +66,12 @@ const NFTList = () => {
         wlAccountAddress: item.address,
         tokenAddress: item.tokenAddress,
         lastClaimedEpoch: item.lastClaimedEpoch,
-        isClaimable: (item.lastClaimedEpoch < currEpoch) ? true : false ,
+        isClaimable: (item.lastClaimedEpoch < currEpoch) ? true : false,
         imgUri: imgUri
       })
     }
 
-    console.log(userWlToken)
+    console.log("userWlToken: ", userWlToken)
 
     setPreprocessedTokensData(userWlToken);
 
@@ -69,24 +81,82 @@ const NFTList = () => {
     return <Center>You hold any of our stocks</Center>
   }
 
-  return (
-    <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
-      {preprocessedTokensData.map((item) => {
-        return (
-          <Card>
-            <CardHeader>
-              <Heading size='md'> {shortenHash(item.tokenAddress)}</Heading>
-            </CardHeader>
-            <CardBody>
-              <Image mb={"1rem"} src={item.imgUri} />
-              <Text mb={"1rem"}>last claimed (epoch): {item.lastClaimedEpoch}</Text>
-              <Button disabled={!item.isClaimable} >Claim</Button>
-            </CardBody>
-          </Card>
-        )
-      })}
+  const reloadData = async () => {
 
-    </SimpleGrid>
+    setLoading(true);
+
+    const dataArrDV = await getAllDividendVaults(connection);
+    setAllDividendVaultInfos(dataArrDV);
+
+    const accounts = await getUserAllShareAccountInfo(connection, wallet!.publicKey);
+    setUserAllShareAccounts(accounts);
+    const filtered = accounts.filter((item) => item.epoch == currEpoch);
+    if (filtered.length > 0) {
+      setUserShareAccount(filtered[0])
+    }
+
+    await preprocessTokensData();
+
+    setLoading(false);
+    
+
+  }
+
+  const handleClaim = async (tokenAddress: PublicKey) => {
+    if (program && wallet?.publicKey) {
+      setLoading(true)
+      const transaction = new Transaction();
+      if (!userShareAccount) {
+        const createUserShareAccountIx = await createCreateShareAccountIntruction(
+          program, currEpoch, wallet?.publicKey
+        );
+        transaction.add(createUserShareAccountIx);
+      }
+      const claimShareIx = await createClaimShareInstruction(
+        program,
+        currEpoch,
+        wallet.publicKey,
+        tokenAddress
+      );
+      transaction.add(claimShareIx);
+      transaction.feePayer = wallet.publicKey;
+      transaction.recentBlockhash = (await connection.getRecentBlockhash('max')).blockhash;
+      setLoading(false);
+      const signedTx = await wallet?.signTransaction(transaction);
+      const wireTx = signedTx.serialize();
+      const signature = await connection.sendRawTransaction(wireTx);
+      setLoading(true)
+      await connection.confirmTransaction(signature, "finalized");
+      setLoading(false)
+      reloadData();
+    }
+  }
+
+  return (
+    <>
+      <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
+        {preprocessedTokensData.map((item) => {
+          return (
+            <Card>
+              <CardHeader>
+                <Heading size='md'> {shortenHash(item.tokenAddress)}</Heading>
+              </CardHeader>
+              <CardBody>
+                <Image mb={"1rem"} src={item.imgUri} />
+                <Text mb={"1rem"}>last claimed (epoch): {item.lastClaimedEpoch}</Text>
+                <Button
+                  disabled={!item.isClaimable}
+                  onClick={() => handleClaim(new PublicKey(item.tokenAddress))}
+                >
+                  Claim
+                </Button>
+              </CardBody>
+            </Card>
+          )
+        })}
+
+      </SimpleGrid>
+    </>
   )
 }
 
