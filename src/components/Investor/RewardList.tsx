@@ -10,9 +10,13 @@ import {
 } from '@chakra-ui/react'
 import { useProgramData } from '../../stores/useProgramData';
 import { useEffect, useState } from 'react';
-import { DividendVaultType, userShareAccountType } from '../../smart-contract/accounts';
+import { DividendVaultType, getAllDividendVaults, getUserAllShareAccountInfo, userShareAccountType } from '../../smart-contract/accounts';
 import { shortenHash } from '../../utils';
 import { useWeb3 } from '../../stores/useWeb3';
+import { createClaimDividendIntruction } from '../../smart-contract/intructions';
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
+import { Transaction } from '@solana/web3.js';
+import { useLoading } from '../../stores/useLoading';
 
 interface RewardData extends DividendVaultType {
   numShare: number,
@@ -22,9 +26,50 @@ interface RewardData extends DividendVaultType {
 
 const RewardList = () => {
 
-  const { allDividendVaultInfos, userAllShareAccounts } = useProgramData();
+  const {
+    allDividendVaultInfos,
+    userAllShareAccounts,
+    setAllDividendVaultInfos,
+    setUserAllShareAccounts
+  } = useProgramData();
   const [rewardData, setRewardData] = useState<RewardData[]>([]);
-  const {currEpoch} = useWeb3();
+  const { currEpoch, program, connection } = useWeb3();
+  const wallet = useAnchorWallet();
+  const { setLoading } = useLoading();
+
+  const reloadData = async () => {
+
+    setLoading(true);
+
+    const dataArrDV = await getAllDividendVaults(connection);
+    setAllDividendVaultInfos(dataArrDV);
+
+    const accounts = await getUserAllShareAccountInfo(connection, wallet!.publicKey);
+    setUserAllShareAccounts(accounts);
+
+    setLoading(false);
+
+  }
+
+  const claimDividend = async (epoch: number) => {
+    if (wallet?.publicKey && program) {
+      const transaction = new Transaction();
+      const claimIx = await createClaimDividendIntruction(
+        program,
+        wallet?.publicKey,
+        epoch
+      );
+      transaction.add(claimIx);
+      transaction.feePayer = wallet.publicKey;
+      transaction.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
+
+      const signedTx = await wallet.signTransaction(transaction);
+      const wireTx = signedTx.serialize();
+      const signature = await connection.sendRawTransaction(wireTx);
+      await connection.confirmTransaction(signature, "finalized");
+      reloadData();
+    }
+  }
 
   useEffect(() => {
 
@@ -75,7 +120,11 @@ const RewardList = () => {
                 <Td>{item.solDividendAmount} {'SOL'}</Td>
                 <Td>{item.userSolDividendAmount} {"SOL"} {`(${(item.userSharePct)}%)`}</Td>
                 <Td >
-                  <Button isDisabled={item.epoch == currEpoch} >Claim</Button>
+                  <Button
+                    isDisabled={item.epoch == currEpoch}
+                    onClick={() => claimDividend(item.epoch)}
+                  >Claim
+                  </Button>
                 </Td>
               </Tr>)
           })}

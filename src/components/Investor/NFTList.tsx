@@ -99,7 +99,6 @@ const NFTList = () => {
 
     setLoading(false);
     
-
   }
 
   const handleClaim = async (tokenAddress: PublicKey) => {

@@ -333,7 +333,7 @@ export const createClaimDividendIntruction = async (
     owner: owner,
     dividendVault: dividendVault,
     dividendVaultWallet: dividendVaultWallet
-  })
+  }).instruction()
 }
 
 export const createForceCloseIx = async (
