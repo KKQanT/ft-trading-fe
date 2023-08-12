@@ -27,22 +27,24 @@ const EpochStats = () => {
   const [userIncome, setUserIncome] = useState<number>(0);
 
   useEffect(() => {
-    const currEpochData = allDividendVaultInfos.filter((item) => item.epoch == currEpoch)[0];
-    const totalIncome_ = currEpochData.solDividendAmount;
-    const totalNShare_ = currEpochData.totalNShare;
-    setTotalIncome(totalIncome_);
-    setTotalNumShare(totalNShare_);
-    console.log('run useEffect: ', userShareAccount)
-    if (userShareAccount) {
-      console.log('run useEffect userShareAccount')
+    if (allDividendVaultInfos.length > 0) {
+      const currEpochData = allDividendVaultInfos.filter((item) => item.epoch == currEpoch)[0];
+      const totalIncome_ = currEpochData.solDividendAmount;
+      const totalNShare_ = currEpochData.totalNShare;
+      setTotalIncome(totalIncome_);
+      setTotalNumShare(totalNShare_);
+      console.log('run useEffect: ', userShareAccount)
+      if (userShareAccount) {
+        console.log('run useEffect userShareAccount')
 
-      const userNShare_ = userShareAccount.nShare;
-      const userIncome_ = (totalNShare_ == 0) ? 0 : totalIncome_ * (userNShare_ / totalNShare_)
-      setUserNumShare(userNShare_);
-      setUserIncome(userIncome_);
-    } else {
-      setUserNumShare(0);
-      setUserIncome(0);
+        const userNShare_ = userShareAccount.nShare;
+        const userIncome_ = (totalNShare_ == 0) ? 0 : totalIncome_ * (userNShare_ / totalNShare_)
+        setUserNumShare(userNShare_);
+        setUserIncome(userIncome_);
+      } else {
+        setUserNumShare(0);
+        setUserIncome(0);
+      }
     }
   }, [userShareAccount, allDividendVaultInfos])
 
@@ -59,7 +61,7 @@ const EpochStats = () => {
           title={'Your Income'}
           stat={`${roundToFourDigits(userIncome)} sol (${userNumShare}/${totalNumShare})`}
           icon={<FaDollarSign size={'2em'} />}
-          />
+        />
       </SimpleGrid>
     </Box>
   )
