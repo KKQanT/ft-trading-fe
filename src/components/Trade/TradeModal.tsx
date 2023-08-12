@@ -23,6 +23,9 @@ import { createBuyTransaction } from '../../smart-contract/intructions';
 import { useWeb3 } from '../../stores/useWeb3';
 import { PublicKey } from '@solana/web3.js';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
+import { useLoading } from '../../stores/useLoading';
+import { useProgramData } from '../../stores/useProgramData';
+import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
 
 interface Props {
   isOpen: boolean,
@@ -40,7 +43,9 @@ export default function TradeModal(
   const [tokenAmount, setTokenAmount] = useState<number>(0);
   const { connection, program } = useWeb3()
   const wallet = useAnchorWallet();
-  const {currEpoch} = useWeb3();
+  const { currEpoch } = useWeb3();
+  const { setLoading } = useLoading();
+  const { setAllSellEscrowInfo } = useProgramData();
 
   const handleBuy = async () => {
     if (program && wallet) {
@@ -56,12 +61,17 @@ export default function TradeModal(
       );
 
       buyIx.feePayer = wallet.publicKey,
-      buyIx.recentBlockhash = (await connection.getRecentBlockhash('max')).blockhash;
+        buyIx.recentBlockhash = (await connection.getRecentBlockhash('max')).blockhash;
 
       const signedTx = await wallet.signTransaction(buyIx);
       const wireTx = signedTx.serialize();
-      const signature = await connection.sendRawTransaction(wireTx, {skipPreflight: true});
-      console.log(signature)
+      const signature = await connection.sendRawTransaction(wireTx, { skipPreflight: true });
+      setLoading(true);
+      await connection.confirmTransaction(signature, "finalized");
+      const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);
+      setAllSellEscrowInfo(dataArrSE);
+      setLoading(false);
+      onClose();
     }
   }
 
