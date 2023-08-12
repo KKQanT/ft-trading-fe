@@ -35,7 +35,7 @@ export default function TokenService() {
   const [tokenSymbol, setTokenSymbol] = useState<string>("");
   const [metadataUri, setMetadataUri] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
-  const [tokenImageUri, setTokenImageUri] = useState<string>('public/solana_logo.png');
+  const [tokenImageUri, setTokenImageUri] = useState<string|null>(null);
   const [signature, setSignature] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string>("");
 
@@ -138,7 +138,7 @@ export default function TokenService() {
             <CardBody>
               <Center>
                 <Image
-                  src={tokenImageUri}
+                  src={tokenImageUri ? tokenImageUri : "solana_logo.png" }
                   alt='Green double couch with wooden legs'
                   borderRadius='lg'
                   height={"2xs"}
