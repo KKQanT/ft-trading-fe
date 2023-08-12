@@ -15,10 +15,13 @@ import {
 
 import { Card, CardHeader, CardBody } from '@chakra-ui/react'
 import { RepeatIcon } from '@chakra-ui/icons'
-import {shortenHash} from '../../utils'
+import { shortenHash } from '../../utils'
 import TradeModal from './TradeModal'
 import { useState, useEffect } from "react";
 import { useProgramData } from '../../stores/useProgramData'
+import { useLoading } from '../../stores/useLoading'
+import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts'
+import { useWeb3 } from '../../stores/useWeb3'
 
 export interface TokenInfo {
   tokenAddress: string,
@@ -37,7 +40,9 @@ const TokenListCard = () => {
     seller: ""
   });
   const [tokenHasSet, setTokenHasSet] = useState<boolean>(false);
-  const { allSellEscrowInfo } = useProgramData()
+  const { allSellEscrowInfo, setAllSellEscrowInfo } = useProgramData()
+  const { setLoading } = useLoading();
+  const {connection} = useWeb3();
 
   const openTrade = (
     tokenAddress: string,
@@ -61,6 +66,14 @@ const TokenListCard = () => {
     }
   }, [selectedToken])
 
+  const handleRefresh = async () => {
+    setLoading(true);
+    const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);
+    setAllSellEscrowInfo(dataArrSE);
+    setLoading(false);
+
+  }
+
   return (
     <>
       <Card width={"80%"}>
@@ -69,7 +82,14 @@ const TokenListCard = () => {
             All Token Listings
           </Heading>
           <Spacer />
-          <Center ><RepeatIcon /></Center>
+          <Center >
+            <RepeatIcon _hover={{
+              cursor: "pointer"
+            }}
+              boxSize={"2rem"}
+              onClick={handleRefresh}
+            />
+          </Center>
         </CardHeader>
         <CardBody>
           <TableContainer>
