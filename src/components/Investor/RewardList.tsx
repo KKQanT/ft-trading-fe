@@ -11,7 +11,7 @@ import {
 import { useProgramData } from '../../stores/useProgramData';
 import { useEffect, useState } from 'react';
 import { DividendVaultType, getAllDividendVaults, getUserAllShareAccountInfo } from '../../smart-contract/accounts';
-import { shortenHash } from '../../utils';
+import { roundToFourDigits, shortenHash } from '../../utils';
 import { useWeb3 } from '../../stores/useWeb3';
 import { createClaimDividendIntruction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
@@ -117,8 +117,8 @@ const RewardList = () => {
               <Tr>
                 <Td>{item.epoch}</Td>
                 <Td>{shortenHash(item.address)}</Td>
-                <Td>{item.solDividendAmount} {'SOL'}</Td>
-                <Td>{item.userSolDividendAmount} {"SOL"} {`(${(item.userSharePct)}%)`}</Td>
+                <Td>{roundToFourDigits(item.solDividendAmount)} {'SOL'}</Td>
+                <Td>{roundToFourDigits(item.userSolDividendAmount)} {"SOL"} {`(${roundToFourDigits(item.userSharePct)}%)`}</Td>
                 <Td >
                   <Button
                     isDisabled={item.epoch == currEpoch}
