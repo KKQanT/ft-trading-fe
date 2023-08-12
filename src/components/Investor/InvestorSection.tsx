@@ -79,7 +79,6 @@ const InvestorSection = () => {
                 <RewardList />
               </TabPanel>
             </TabPanels>
-
           </Tabs>
         </Stack>
 

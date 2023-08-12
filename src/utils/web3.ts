@@ -1,9 +1,9 @@
 import { PublicKey, Connection, Keypair, Transaction, SystemProgram } from "@solana/web3.js";
 import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, createInitializeMintInstruction, createMintToInstruction, getAssociatedTokenAddress, getMinimumBalanceForRentExemptMint } from "@solana/spl-token";
-import { createCreateMetadataAccountV3Instruction } from "@metaplex-foundation/mpl-token-metadata";
+import { createCreateMetadataAccountV3Instruction, createUpdateMetadataAccountV2Instruction } from "@metaplex-foundation/mpl-token-metadata";
 import { GetProgramAccountsFilter } from "@solana/web3.js";
 
-export const START_TS = 1691587000 - 86400*3;
+export const START_TS = 1691587000 - 86400 * 3;
 export const EPOCH_DURATION = 86400
 
 export async function checkAssociatedTokenAccount(
@@ -142,7 +142,7 @@ export const createMintTokenTransaction = async (
 export interface UserTokenType {
   mintAddress: string,
   tokenBalance: number
-} 
+}
 
 export const getUserTokens = async (wallet: string, solanaConnection: Connection) => {
   const filters: GetProgramAccountsFilter[] = [
@@ -158,7 +158,7 @@ export const getUserTokens = async (wallet: string, solanaConnection: Connection
   const accounts = await solanaConnection.getParsedProgramAccounts(
     TOKEN_PROGRAM_ID, //new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
     { filters: filters }
-  );  
+  );
 
   const dataArr = accounts.map((account) => {
     const parsedAccountInfo: any = account.account.data;
@@ -172,4 +172,55 @@ export const getUserTokens = async (wallet: string, solanaConnection: Connection
   });
 
   return dataArr
+}
+
+export const createUpdateMetadataIx = async (
+  tokenAddress: PublicKey,
+  name: string,
+  symbol: string,
+  uri: string,
+  payer: PublicKey
+) => {
+  const [metadataAddress] = await PublicKey.findProgramAddress(
+    [
+      Buffer.from("metadata"),
+      (new PublicKey(METADATA_PROGRAM_ID)).toBuffer(),
+      tokenAddress.toBuffer()
+    ],
+    new PublicKey(METADATA_PROGRAM_ID)
+  );
+
+  const data = {
+    name: name,
+    symbol: symbol,
+    uri: uri,
+    sellerFeeBasisPoints: 1000,
+    creators: [
+      {
+        address: payer,
+        verified: true,
+        share: 100
+      }
+    ],
+    collection: null,
+    uses: null
+  }
+
+  const updateMetadataIx = createUpdateMetadataAccountV2Instruction(
+    {
+      metadata: metadataAddress,
+      updateAuthority: payer
+    },
+    {
+      updateMetadataAccountArgsV2: {
+        data: data,
+        updateAuthority: payer,
+        primarySaleHappened: true,
+        isMutable: true
+      }
+    }
+  );
+
+  return updateMetadataIx
+
 }
