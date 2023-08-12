@@ -33,6 +33,9 @@ import { useState } from "react";
 import { createSellTransaction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
+import { useProgramData } from '../../stores/useProgramData';
+import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
+import { useLoading } from '../../stores/useLoading';
 
 interface PropType {
   isOpen: boolean,
@@ -49,6 +52,8 @@ function ListTokenModal(
   const [price, setPrice] = useState<number>(0);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
   const wallet = useAnchorWallet();
+  const { setAllSellEscrowInfo } = useProgramData();
+  const { setLoading } = useLoading();
 
   const handleSell = async () => {
     if (program && connection && wallet?.publicKey && selectedToken) {
@@ -69,6 +74,13 @@ function ListTokenModal(
       const wireTx = signedTx.serialize();
       const signature = await connection.sendRawTransaction(wireTx, { skipPreflight: true });
       console.log(signature);
+      setLoading(true);
+      await connection.confirmTransaction(signature, "finalized");
+      const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);
+      setAllSellEscrowInfo(dataArrSE);
+      setLoading(false);
+      onClose();
+
     }
 
   }
