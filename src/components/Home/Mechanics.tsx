@@ -132,7 +132,6 @@ const Mechanics = () => {
                 <Text textAlign={"start"} py={2}>
                 Each epoch will have a corresponding account to store the "total_n_share," which denotes the total number of platform NFTs used for verification during that epoch. Each shareholder will have their own "UserShareAccount" to store a value called "n_share," which indicates the number of times they have used NFTs for verification in each epoch. For instance, if you hold just one NFT from our company and verify the NFT via our on-chain program during an epoch when there were 20 other NFTs verified by other holders, you would be considered a 5% (1/20) shareholder of the platform for that epoch. Consequently, you can then claim 5% of the platform's income.
                 </Text> 
-                <Text mb={"1rem"} textAlign={"start"}>Note:</Text>
                 <Box mt="1rem">
                   <Link color={"orange.500"} href="https://solscan.io/tx/etJvFSBTVuiaTbh9sxL9P4t4x8UAKZfGSEb3hrnGsxqWnEAHRnGAZp8h8ZzUFLAPRK4jrCnoVNiUqiiKpwLZQzj?cluster=devnet" isExternal>
                     view example transaction
