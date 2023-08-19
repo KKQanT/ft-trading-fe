@@ -1,27 +1,21 @@
-# React + TypeScript + Vite
+# Token Trading Platform with On-chain Dividend System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend implementation to interact with the deployed on-chain program on devnet : [S3T2JExjrp6a48LNcxNxBHKa1GTB3bXRmwH3wepB5KQ](https://solscan.io/account/S3T2JExjrp6a48LNcxNxBHKa1GTB3bXRmwH3wepB5KQ?cluster=devnet)
 
-Currently, two official plugins are available:
+The website was lived at https://s3t-trade.vercel.app/. If you wished to test it out you have to
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Download custodial wallet extension such as [Phantom](https://phantom.app/), [Solfare](https://solflare.com/), ...etc. If you don't have one.
+- Switch your network on Phantom to "testnet".
+- You can run solana cli or write an airdrop function if you are technical to airdrop SOL to your wallet [doc](https://www.quicknode.com/guides/solana-development/getting-started/a-complete-guide-to-airdropping-test-sol-on-solana). 
+- If you are non technical you can visit this [website](https://solfaucet.com/) for sol airdrop on devnet
+- If you wish to try token listing features you can create your own token following [this](https://spl.solana.com/token) or using my [token service](https://s3t-trade.vercel.app/token-service) to mint tokens.
+- If you want the shared-holder NFTs to try out claiming dividend features, just ping me.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## UI Improvement (TO DO)
+- Re-Design landing page
+- Add airdrop service
+- Token-Price aggregration (like other usual stock trading platforms)
+- Tutorial page
+- Improve Token Service Page
+- Some components are still not mobile optimized
+- Improve On-Chain Status components 
