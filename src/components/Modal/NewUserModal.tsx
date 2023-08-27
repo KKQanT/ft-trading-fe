@@ -1,4 +1,4 @@
-import { Button, Center, Checkbox, Link, ListItem, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, UnorderedList, VStack } from "@chakra-ui/react"
+import { Button, Center, Checkbox, Link, ListItem, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, UnorderedList, VStack } from "@chakra-ui/react"
 
 interface Props {
   isOpen: boolean,
