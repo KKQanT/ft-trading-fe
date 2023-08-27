@@ -13,7 +13,7 @@ The website was lived at https://s3t-trade.vercel.app/. If you wished to test it
 
 ## UI Improvement (TO DO)
 - Re-Design landing page
-- Add airdrop service
+- Add Stripe payment to purchase SOL off-chain using real world money
 - Token-Price aggregration (like other usual stock trading platforms)
 - Tutorial page
 - Improve Token Service Page
