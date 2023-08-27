@@ -23,12 +23,28 @@ import { EPOCH_DURATION, START_TS, getSolanaTime, getUserTokens } from './utils/
 import { getAllDividendVaults, getAllSellerEscrowAccountsInfo, getAllWhitelistedTokenInfos } from './smart-contract/accounts';
 import { useProgramData } from './stores/useProgramData';
 import { useLoading } from './stores/useLoading';
-
+import { useState } from "react";
+import NewUserModal from './components/Modal/NewUserModal';
 
 function App() {
+
+  const [showNewUserModal, setShowNewUserModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    const hideNewUserModal = localStorage.getItem("hideNewUserModal");
+    if (!hideNewUserModal || (hideNewUserModal == "false")) {
+      setShowNewUserModal(true)
+    }
+  }, [])
+
+
   return (
     <WalletAdapterContext>
       <Navbar />
+      <NewUserModal
+        isOpen={showNewUserModal}
+        onClose={() => { setShowNewUserModal(false) }}
+      />
       <WrappedApp />
     </WalletAdapterContext>
   )
@@ -37,16 +53,16 @@ function App() {
 function WrappedApp() {
   const wallet = useAnchorWallet();
 
-  const { 
-    connection, 
-    program, 
-    setProgram, 
-    setUserTokens, 
-    setCurrEpoch
-   } = useWeb3();
-  const {setLoading} = useLoading();
   const {
-    setAllWhiteListedTokenInfo, 
+    connection,
+    program,
+    setProgram,
+    setUserTokens,
+    setCurrEpoch
+  } = useWeb3();
+  const { setLoading } = useLoading();
+  const {
+    setAllWhiteListedTokenInfo,
     setAllDividendVaultInfos,
     setAllSellEscrowInfo
   } = useProgramData()
