@@ -4,7 +4,7 @@ import { createCreateMetadataAccountV3Instruction, createUpdateMetadataAccountV2
 import { GetProgramAccountsFilter } from "@solana/web3.js";
 
 export const START_TS = 1691587000 - 86400 * 3;
-export const EPOCH_DURATION = 86400
+export const EPOCH_DURATION = 86400 * 30
 
 export async function checkAssociatedTokenAccount(
   connection: Connection,
