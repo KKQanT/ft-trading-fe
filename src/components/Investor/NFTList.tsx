@@ -1,11 +1,11 @@
-import { SimpleGrid, Button, Center } from "@chakra-ui/react";
+import { SimpleGrid, Button, Center, Container } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, Text, Heading, Image } from '@chakra-ui/react';
 import { useWeb3 } from "../../stores/useWeb3";
 import { useProgramData } from "../../stores/useProgramData";
 import { useEffect, useState } from "react";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey, Transaction } from "@solana/web3.js";
-import { METADATA_PROGRAM_ID} from "../../utils/web3";
+import { METADATA_PROGRAM_ID } from "../../utils/web3";
 import axios from "axios";
 import { shortenHash } from "../../utils";
 import { getAllDividendVaults, getUserAllShareAccountInfo } from "../../smart-contract/accounts";
@@ -78,7 +78,11 @@ const NFTList = () => {
   }
 
   if (preprocessedTokensData.length == 0) {
-    return <Center>You hold any of our stocks</Center>
+    return (
+      <Container>
+        <Center >You don't have any of our stocks</Center>
+      </Container>
+    )
   }
 
   const reloadData = async () => {
@@ -98,7 +102,7 @@ const NFTList = () => {
     await preprocessTokensData();
 
     setLoading(false);
-    
+
   }
 
   const handleClaim = async (tokenAddress: PublicKey) => {

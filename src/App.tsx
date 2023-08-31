@@ -68,20 +68,20 @@ function WrappedApp() {
   } = useProgramData()
 
   useEffect(() => {
-    if (wallet?.publicKey) {
-      const provider = new anchor.AnchorProvider(
-        connection,
-        wallet as anchor.Wallet,
-        {}
-      );
-      anchor.setProvider(provider);
 
-      const program = new anchor.Program(
-        IDL as anchor.Idl,
-        S3T_TRADE_PROGRAM_ID
-      );
-      setProgram(program);
-    }
+    const provider = new anchor.AnchorProvider(
+      connection,
+      wallet as anchor.Wallet,
+      {}
+    );
+    anchor.setProvider(provider);
+
+    const program = new anchor.Program(
+      IDL as anchor.Idl,
+      S3T_TRADE_PROGRAM_ID
+    );
+    setProgram(program);
+
   }, [wallet?.publicKey]);
 
   useEffect(() => {
