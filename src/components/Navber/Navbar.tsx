@@ -34,14 +34,14 @@ export default function Navbar() {
   return (
     <Box>
       <Flex
-        bg={useColorModeValue('gray.200', 'gray.800')}
+        bg={"orange.400"}
         color={useColorModeValue('gray.600', 'white')}
         minH={'60px'}
         py={{ base: 2 }}
         px={{ base: 4 }}
         borderBottom={1}
         borderStyle={'solid'}
-        borderColor={useColorModeValue('gray.200', 'gray.900')}
+        borderColor={'black'}
         align={'center'}>
         <Flex
           flex={{ base: 1, md: 'auto' }}
@@ -58,7 +58,7 @@ export default function Navbar() {
           <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
-            color={useColorModeValue('gray.800', 'white')}>
+            color={"white"}>
             S3T TRADE
           </Text>
 
