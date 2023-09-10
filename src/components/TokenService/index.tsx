@@ -35,7 +35,7 @@ export default function TokenService() {
   const [tokenSymbol, setTokenSymbol] = useState<string>("");
   const [metadataUri, setMetadataUri] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
-  const [tokenImageUri, setTokenImageUri] = useState<string|null>(null);
+  const [tokenImageUri, setTokenImageUri] = useState<string | null>(null);
   const [signature, setSignature] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string>("");
 
@@ -134,11 +134,11 @@ export default function TokenService() {
         </Heading>
         <SimpleGrid columns={2} spacing={10} width={"xl"} alignSelf={"center"}>
 
-          <Card maxW='sm' bg={'transparent'}>
+          <Card maxW='sm' bg={'transparent'} border={"1px"} borderColor={"white"} color={"white"} height={"600px"}>
             <CardBody>
               <Center>
                 <Image
-                  src={tokenImageUri ? tokenImageUri : "solana_logo.png" }
+                  src={tokenImageUri ? tokenImageUri : "solana_logo.png"}
                   alt='Green double couch with wooden legs'
                   borderRadius='lg'
                   height={"2xs"}
@@ -159,10 +159,26 @@ export default function TokenService() {
             </CardBody>
           </Card>
 
-          <Tabs variant='soft-rounded' colorScheme='orange'>
+          <Tabs variant='unstyled' colorScheme='orange' border={"1px"} borderColor={"white"} height={"600px"}>
             <TabList>
-              <Tab >Mint</Tab>
-              <Tab>Update</Tab>
+              <Tab 
+                borderRight={"1px"}                
+                borderColor={"white"}
+                _selected={{
+                  color: 'black',
+                  bg: 'white'
+                }}>
+                Mint
+              </Tab>
+              <Tab
+                borderRight={"1px"}
+                borderColor={"white"}
+                _selected={{
+                  color: 'black',
+                  bg: 'white'
+                }}
+              >Update
+              </Tab>
             </TabList>
             <TabPanels>
               <TabPanel>

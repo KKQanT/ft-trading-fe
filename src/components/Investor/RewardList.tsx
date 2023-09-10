@@ -100,8 +100,8 @@ const RewardList = () => {
   }, [allDividendVaultInfos, userAllShareAccounts])
 
   return (
-    <TableContainer>
-      <Table variant={"striped"} colorScheme={"orange"}>
+    <TableContainer height={"450px"}>
+      <Table bg={"gray.100"} color={"black"}>
         <Thead>
           <Tr>
             <Th isNumeric>Epoch</Th>
@@ -123,6 +123,8 @@ const RewardList = () => {
                   <Button
                     isDisabled={item.epoch == currEpoch}
                     onClick={() => claimDividend(item.epoch)}
+                    bg={"orange.400"}
+                    color={"white"}
                   >Claim
                   </Button>
                 </Td>

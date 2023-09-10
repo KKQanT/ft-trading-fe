@@ -34,7 +34,7 @@ export default function Home() {
             </Heading>
           </Fade>
           <Fade>
-            <Text color={'gray.500'}>
+            <Text>
               Welcome to S3T Trade, where safe token trading is our priority! Buy, sell, and trade NFTs/FTs securely on our platform. Hold our NFTs to become a shareholder and receive real-time dividend shares in SOL from platform income. Join us now for the future of digital asset trading!
               <br />
               {"All transactions are transaparante on chains: "}
@@ -50,9 +50,9 @@ export default function Home() {
             position={'relative'}>
             <Fade>
               <Button
+                width={"100px"}
                 colorScheme={'green'}
                 bg={'orange.400'}
-                rounded={'full'}
                 px={6}
                 _hover={{
                   bg: 'orange.600',
@@ -61,8 +61,16 @@ export default function Home() {
               >
                 Trade
               </Button>
-              <Button variant={'link'} colorScheme={'blue'} size={'sm'} onClick={() => { navigate('/investor') }}>
-                Investor
+              <Button
+               color={"orange.400"} 
+               width={"100px"} 
+               onClick={() => { navigate('/investor') }}
+               bg={'white'}
+               _hover={{
+                bg: 'gray.400',
+              }}
+               >
+                Invest
               </Button>
             </Fade>
           </Stack>

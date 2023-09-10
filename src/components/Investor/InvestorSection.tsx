@@ -17,7 +17,7 @@ const InvestorSection = () => {
   const wallet = useAnchorWallet();
 
   const { currEpoch, connection } = useWeb3();
-  const {  setUserAllShareAccounts, setUserShareAccount, setAllDividendVaultInfos } = useProgramData();
+  const { setUserAllShareAccounts, setUserShareAccount, setAllDividendVaultInfos } = useProgramData();
   const { setLoading } = useLoading();
 
   useEffect(() => {
@@ -66,12 +66,28 @@ const InvestorSection = () => {
             </Text>
           </Heading>
           <EpochStats />
-          <Tabs variant='soft-rounded' colorScheme='orange' w={[300, 400, 700]}>
-            <TabList>
-              <Tab>S3T Trade Stock</Tab>
-              <Tab>Claimable Dividend</Tab>
+          <Tabs variant='unstyled' w={[300, 400, 700]}>
+            <TabList >
+              <Tab
+                border={"1px"}
+                borderColor={"white"}
+                _selected={{
+                  color: 'black',
+                  bg: 'white'
+                }}
+              >
+                S3T Trade Stock
+              </Tab>
+              <Tab
+                border={"1px"}
+                borderColor={"white"}
+                _selected={{
+                  color: 'black',
+                  bg: 'white'
+                }}
+              >Claimable Dividend</Tab>
             </TabList>
-            <TabPanels>
+            <TabPanels border={"1px"}>
               <TabPanel>
                 <NFTList />
               </TabPanel>

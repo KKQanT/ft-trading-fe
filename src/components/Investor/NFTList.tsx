@@ -80,7 +80,7 @@ const NFTList = () => {
   if (preprocessedTokensData.length == 0) {
     return (
       <Container>
-        <Center >You don't have any of our stocks</Center>
+        <Center height={"450px"}>You don't hold any of our stocks (NFTs) in your wallets</Center>
       </Container>
     )
   }
@@ -140,7 +140,7 @@ const NFTList = () => {
       <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
         {preprocessedTokensData.map((item) => {
           return (
-            <Card>
+            <Card bg={"gray.100"}>
               <CardHeader>
                 <Heading size='md'> {shortenHash(item.tokenAddress)}</Heading>
               </CardHeader>
@@ -150,6 +150,8 @@ const NFTList = () => {
                 <Button
                   isDisabled={!item.isClaimable}
                   onClick={() => handleClaim(new PublicKey(item.tokenAddress))}
+                  bg={"orange.400"}
+                  color={"white"}
                 >
                   Claim
                 </Button>

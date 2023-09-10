@@ -51,16 +51,16 @@ const EpochStats = () => {
   return (
     <Box maxW="7xl" mx={'auto'} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
-        <EpochStatCard title={'Epoch'} stat={currEpoch.toString()} icon={<FaClock size={'3em'} />} />
+        <EpochStatCard title={'Epoch'} stat={currEpoch.toString()} icon={<FaClock color="white" size={'3em'} />} />
         <EpochStatCard
           title={'Total Income'}
           stat={`${totalIncome} sol`}
-          icon={<FaDollarSign size={'2em'} />}
+          icon={<FaDollarSign color="white" size={'2em'} />}
         />
         <EpochStatCard
           title={'Your Income'}
           stat={`${roundToFourDigits(userIncome)} sol (${userNumShare}/${totalNumShare})`}
-          icon={<FaDollarSign size={'2em'} />}
+          icon={<FaDollarSign color="white" size={'2em'} />}
         />
       </SimpleGrid>
     </Box>
@@ -83,7 +83,6 @@ const EpochStatCard = (props: EpochStatCardProps) => {
       py={'10px'}
       shadow={'xl'}
       border={'1px solid'}
-      borderColor={"orange.500"}
       rounded={'lg'}>
       <Flex justifyContent={'space-between'}>
         <Box pl={{ base: 2, md: 4 }}>
