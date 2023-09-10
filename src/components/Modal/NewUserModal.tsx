@@ -30,8 +30,8 @@ const NewUserModal = ({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Hold Up!</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6} bg=''>
+          <ModalCloseButton bg={"black"} color={"white"} />
+          <ModalBody pb={6} color={"black"}>
             <Text mb="1rem">
               This platform is still in development and the on-chain program is still on devnet. If you wish to test out this platform please...
             </Text>
