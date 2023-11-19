@@ -26,9 +26,12 @@ import { useLoading } from './stores/useLoading';
 import { useState } from "react";
 import NewUserModal from './components/Modal/NewUserModal';
 
+
 function App() {
 
   const [showNewUserModal, setShowNewUserModal] = useState<boolean>(false);
+  const s = 3+2
+  const y = 5 +5
 
   useEffect(() => {
     const hideNewUserModal = localStorage.getItem("hideNewUserModal");
