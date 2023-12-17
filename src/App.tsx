@@ -26,6 +26,8 @@ import { useLoading } from './stores/useLoading';
 import { useState } from "react";
 import NewUserModal from './components/Modal/NewUserModal';
 
+import Hotjar from '@hotjar/browser';
+
 function App() {
 
   const [showNewUserModal, setShowNewUserModal] = useState<boolean>(false);
@@ -35,6 +37,18 @@ function App() {
     if (!hideNewUserModal || (hideNewUserModal == "false")) {
       setShowNewUserModal(true)
     }
+
+    console.log('add hotjar')
+    
+    Hotjar.init(3792866, 6, {
+      debug: true
+    });
+
+    if (Hotjar.isReady()) {
+      console.log('hot jar ready')
+    }
+
+
   }, [])
 
 
