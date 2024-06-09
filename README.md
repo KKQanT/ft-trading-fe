@@ -1,6 +1,6 @@
 # Token Trading Platform with On-chain Dividend System
 
-This is the frontend implementation to interact with the deployed on-chain program on devnet : [S3T2JExjrp6a48LNcxNxBHKa1GTB3bXRmwH3wepB5KQ](https://solscan.io/account/S3T2JExjrp6a48LNcxNxBHKa1GTB3bXRmwH3wepB5KQ?cluster=devnet)
+This is the frontend implementation to interact with the deployed on-chain program on devnet : [S3TX6wejVn7n9d7CPtLySdBaaTgu8RdMCByrCDpEkR4](https://solscan.io/account/S3TX6wejVn7n9d7CPtLySdBaaTgu8RdMCByrCDpEkR4?cluster=devnet)
 
 The website was lived at https://s3t-trade.vercel.app/. If you wished to test it out you have to
 
@@ -19,3 +19,6 @@ The website was lived at https://s3t-trade.vercel.app/. If you wished to test it
 - Improve Token Service Page
 - Some components are still not mobile optimized
 - Improve On-Chain Status components 
+
+## To do
+- improve data loading (all Epoch Dovidend Account)

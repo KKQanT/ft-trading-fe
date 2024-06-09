@@ -38,7 +38,7 @@ export default function Home() {
               Welcome to S3T Trade, where safe token trading is our priority! Buy, sell, and trade NFTs/FTs securely on our platform. Hold our NFTs to become a shareholder and receive real-time dividend shares in SOL from platform income. Join us now for the future of digital asset trading!
               <br />
               {"All transactions are transaparante on chains: "}
-              <Link color={"orange.500"} href='https://solscan.io/account/S3T2JExjrp6a48LNcxNxBHKa1GTB3bXRmwH3wepB5KQ?cluster=devnet'>S3T2JExjrp6a48LNcxNxBHKa1GTB3bXRmwH3wepB5KQ
+              <Link color={"orange.500"} href='https://solscan.io/account/S3TX6wejVn7n9d7CPtLySdBaaTgu8RdMCByrCDpEkR4?cluster=devnet'>S3TX6wejVn7n9d7CPtLySdBaaTgu8RdMCByrCDpEkR4
               </Link>
             </Text>
           </Fade>

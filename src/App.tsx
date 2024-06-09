@@ -136,7 +136,7 @@ function WrappedApp() {
     setAllWhiteListedTokenInfo(dataArrWL);
 
     const dataArrDV = await getAllDividendVaults(connection);
-    console.log("dataArrDV: ", dataArrDV)
+    console.log("dataArrDV: ", dataArrDV.sort((a, b) => a.epoch - b.epoch))
     setAllDividendVaultInfos(dataArrDV);
 
     const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);
