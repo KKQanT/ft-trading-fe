@@ -1,6 +1,6 @@
 import { PublicKey, Connection, Keypair, Transaction, SystemProgram } from "@solana/web3.js";
 import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, createInitializeMintInstruction, createMintToInstruction, getAssociatedTokenAddress, getMinimumBalanceForRentExemptMint } from "@solana/spl-token";
-import { createCreateMetadataAccountV3Instruction, createUpdateMetadataAccountV2Instruction } from "@metaplex-foundation/mpl-token-metadata";
+import { Metadata, createCreateMetadataAccountV3Instruction, createUpdateMetadataAccountV2Instruction } from "@metaplex-foundation/mpl-token-metadata";
 import { GetProgramAccountsFilter } from "@solana/web3.js";
 
 export const START_TS = 1717861000
@@ -140,8 +140,10 @@ export const createMintTokenTransaction = async (
 }
 
 export interface UserTokenType {
-  mintAddress: string,
-  tokenBalance: number
+  tokenAddress: string,
+  tokenBalance: number,
+  name: string | null,
+  imageUrl: string | null
 }
 
 export const getUserTokens = async (wallet: string, solanaConnection: Connection) => {
@@ -223,4 +225,35 @@ export const createUpdateMetadataIx = async (
 
   return updateMetadataIx
 
+}
+
+export async function getMetadataPDA(
+  mint: PublicKey
+): Promise<[PublicKey, number]> {
+
+  const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+    [
+      Buffer.from("metadata"),
+      (new PublicKey(METADATA_PROGRAM_ID)).toBuffer(),
+      (new PublicKey(mint)).toBuffer()
+    ],
+    new PublicKey(METADATA_PROGRAM_ID)
+  );
+  return [metadataPDA, metadataBump]
+}
+
+export async function getNFTOnchainMetadata(
+  mintAddress: PublicKey,
+  connection: Connection
+): Promise<Metadata | null> {
+  try {
+    const [metadataPDA] = await getMetadataPDA(mintAddress);
+    let onChainMetadata = await Metadata.fromAccountAddress(connection, metadataPDA);
+    onChainMetadata.data.name = onChainMetadata.data.name.replace(/\u0000/g, '');
+    onChainMetadata.data.symbol = onChainMetadata.data.symbol.replace(/\u0000/g, '');
+    onChainMetadata.data.uri = onChainMetadata.data.uri.replace(/\u0000/g, '');
+    return onChainMetadata
+  } catch (err) {
+    return null
+  }
 }

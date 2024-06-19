@@ -1,7 +1,7 @@
 import { ReactNode, useMemo, FC, useEffect } from 'react'
 import './App.css'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { clusterApiUrl } from '@solana/web3.js';
+import { PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { ConnectionProvider, WalletProvider, useAnchorWallet } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
@@ -19,7 +19,7 @@ import { useWeb3 } from './stores/useWeb3';
 import * as anchor from '@project-serum/anchor';
 import { IDL } from './smart-contract/program_types';
 import { S3T_TRADE_PROGRAM_ID } from './smart-contract/program';
-import { EPOCH_DURATION, START_TS, getSolanaTime, getUserTokens } from './utils/web3';
+import { EPOCH_DURATION, START_TS, getNFTOnchainMetadata, getSolanaTime, getUserTokens } from './utils/web3';
 import { getAllDividendVaults, getAllSellerEscrowAccountsInfo, getAllWhitelistedTokenInfos } from './smart-contract/accounts';
 import { useProgramData } from './stores/useProgramData';
 import { useLoading } from './stores/useLoading';
@@ -27,6 +27,7 @@ import { useState } from "react";
 import NewUserModal from './components/Modal/NewUserModal';
 
 import Hotjar from '@hotjar/browser';
+import { getAssociatedTokenAddress } from '@solana/spl-token';
 
 function App() {
 
@@ -109,22 +110,54 @@ function WrappedApp() {
 
   useEffect(() => {
     if (wallet?.publicKey && connection) {
-      getUserTokens(
-        wallet.publicKey.toBase58(), connection
-      ).then((dataArr) => {
-        const filteredDataArr = dataArr.filter((item) => item.tokenBalance > 0)
-        setUserTokens(filteredDataArr)
-      }).catch((err) => { console.log(err) })
+      getUserTokensInfo();
     }
   }, [wallet?.publicKey])
+
+  const getUserTokensInfo = async () => {
+    try {
+    const tokensInfo = await getUserTokens(
+      wallet?.publicKey.toBase58()!,
+      connection
+    );
+    const nonEmptyTokens = tokensInfo.filter((item) => item.tokenBalance > 0);
+    const tokensData = await Promise.all(nonEmptyTokens.map(async (item) => {
+      const onChainMetadata = await getNFTOnchainMetadata(
+        new PublicKey(item.mintAddress),
+        connection
+      );
+
+      if (onChainMetadata) {
+        const respOffChainMetadata = await fetch(onChainMetadata.data.uri);
+        const offChainMetadata = await respOffChainMetadata.json();
+        const imageUrl = offChainMetadata.image as string;
+        return {
+          imageUrl: imageUrl,
+          name: onChainMetadata.data.name,
+          tokenAddress: item.mintAddress,
+          tokenBalance: item.tokenBalance
+        }
+      }
+      return {
+        imageUrl: null,
+        name: null,
+        tokenAddress: item.mintAddress,
+        tokenBalance: item.tokenBalance
+      }
+    }));
+    console.log('tokensData: ', tokensData)
+    setUserTokens(tokensData)
+  } catch (err) {
+    console.log(err)
+  }
+
+  }
 
   useEffect(() => {
     if (program && connection) {
       getProgramData();
     }
   }, [program])
-
-
 
   const getProgramData = async () => {
 

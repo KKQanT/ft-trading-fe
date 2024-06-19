@@ -42,7 +42,7 @@ const NFTList = () => {
 
   const preprocessTokensData = async () => {
     const userTokensAddress = userTokens
-      .map((item) => { return item.mintAddress });
+      .map((item) => { return item.tokenAddress });
 
     const filteredWlTokensInfo = allWhiteListedTokenInfo
       .filter((item) => userTokensAddress.includes(item.tokenAddress));

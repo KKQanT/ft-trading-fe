@@ -13,6 +13,10 @@ import {
   HStack,
   VStack,
   Text,
+  SimpleGrid,
+  Box,
+  Image,
+  Flex,
 
 } from '@chakra-ui/react'
 
@@ -28,21 +32,22 @@ import {
 
 
 import { useWeb3 } from '../../stores/useWeb3';
-import {shortenHash} from '../../utils';
-import { useState } from "react";
+import { shortenHash } from '../../utils';
+import { useEffect, useState } from "react";
 import { createSellTransaction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { useProgramData } from '../../stores/useProgramData';
 import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
 import { useLoading } from '../../stores/useLoading';
+import { UserTokenType } from '../../utils/web3';
+import TokenCard from './TokenCard';
 
 interface PropType {
   isOpen: boolean,
   onOpen: () => void,
   onClose: () => void,
 }
-
 
 function ListTokenModal(
   { isOpen, onClose }: PropType
@@ -57,7 +62,7 @@ function ListTokenModal(
 
   const handleSell = async () => {
     if (program && connection && wallet?.publicKey && selectedToken) {
-      
+
       const transaction = await createSellTransaction(
         connection,
         program,
@@ -85,61 +90,61 @@ function ListTokenModal(
 
   }
 
+  let nftTokenAddressToSell: string[] = [];
+
+  const handleSelect = (tokenAddress: string) => {
+    if (nftTokenAddressToSell.includes(tokenAddress)) {
+      nftTokenAddressToSell = nftTokenAddressToSell.filter(
+        item => item !== tokenAddress
+      );
+
+      return
+    }
+    
+    nftTokenAddressToSell.push(tokenAddress);
+  }
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent alignSelf={"center"}>
-          <ModalHeader>List Your Tokens</ModalHeader>
+        <ModalContent
+          alignSelf={"center"}
+          maxWidth={"512px"}
+          color={"white"}
+          bg={"black"}
+          borderColor={"white"}
+          border={"1px"}
+        >
+          <ModalHeader>
+            <Text >
+              List your tokens for sell
+            </Text>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <TableContainer>
-              <Table variant='striped' colorScheme='orange' size='sm'>
-                <Thead>
-                  <Tr>
-                    <Th>Token Address</Th>
-                    <Th isNumeric>Amount</Th>
-                    <Th></Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {userTokens.map((item) => {
-                    return (
-                      <Tr>
-                        <Td>{shortenHash(item.mintAddress)}</Td>
-                        <Td isNumeric>{item.tokenBalance}</Td>
-                        <Td>
-                          <Button onClick={() => setSelectedToken(item.mintAddress)} >Select</Button>
-                        </Td>
-                      </Tr>
-                    )
-                  })}
-                </Tbody>
-              </Table>
-            </TableContainer>
+            <SimpleGrid
+              minChildWidth="128px"
+              spacing="28px"
+              alignItems="center"
+              justifyContent="center"
+              overflowY={"scroll"}
+              maxHeight={"512px"}
+            >
+              {userTokens.map((item) => {
+                return (
+                  <TokenCard
+                    tokenObj={item}
+                    handleOnClick={() => {handleSelect(item.tokenAddress)}}
+                  />
+                )
+              })}
+
+            </SimpleGrid>
           </ModalBody>
-
-          {selectedToken &&
-            <ModalFooter>
-              <VStack spacing={"1rem"}>
-                <Text>TOKEN ADDRESS: {shortenHash(selectedToken, 10)}</Text>
-                <HStack>
-                  <InputGroup>
-                    <InputLeftAddon children='Price' />
-                    <Input placeholder='SOL/TOKEN' onChange={(e) => setPrice(parseFloat(e.target.value))} />
-                  </InputGroup>
-                  <InputGroup>
-                    <InputLeftAddon children='Amount' />
-                    <Input onChange={(e) => setTokenAmount(parseFloat(e.target.value))}/>
-                  </InputGroup>
-                </HStack>
-                <Button width={"full"} colorScheme='orange' mr={3} onClick={handleSell}>
-                  List
-                </Button>
-              </VStack>
-            </ModalFooter>
-          }
-
+          <ModalFooter>
+            Test
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
