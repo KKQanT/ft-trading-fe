@@ -10,6 +10,8 @@ import {
   Text,
   SimpleGrid,
   Center,
+  Flex,
+  Switch,
 
 } from '@chakra-ui/react'
 
@@ -110,6 +112,8 @@ function ListTokenModal(
     console.log(nftTokenAddressesToSell)
   }, [nftTokenAddressesToSell])
 
+  
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={
@@ -134,6 +138,24 @@ function ListTokenModal(
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            <Flex
+              justifyContent={"flex-end"}
+            >
+              <Flex
+                justifyContent={"space-between"}
+                marginBottom={"16px"}
+              >
+                <Text
+                  marginRight={"8px"}
+                >
+                  Select All
+                </Text>
+                <Switch 
+                margin={"auto"}
+                colorScheme='orange'
+                />
+              </Flex>
+            </Flex>
             <SimpleGrid
               minChildWidth="128px"
               spacing="28px"
