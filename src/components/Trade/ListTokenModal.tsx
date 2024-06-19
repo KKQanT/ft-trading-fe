@@ -7,32 +7,13 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  HStack,
-  VStack,
   Text,
   SimpleGrid,
-  Box,
-  Image,
-  Flex,
+  Center,
 
 } from '@chakra-ui/react'
-
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-} from '@chakra-ui/react'
-
 
 import { useWeb3 } from '../../stores/useWeb3';
-import { shortenHash } from '../../utils';
 import { useEffect, useState } from "react";
 import { createSellTransaction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
@@ -40,7 +21,6 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { useProgramData } from '../../stores/useProgramData';
 import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
 import { useLoading } from '../../stores/useLoading';
-import { UserTokenType } from '../../utils/web3';
 import TokenCard from './TokenCard';
 
 interface PropType {
@@ -59,6 +39,30 @@ function ListTokenModal(
   const wallet = useAnchorWallet();
   const { setAllSellEscrowInfo } = useProgramData();
   const { setLoading } = useLoading();
+  const [nftTokenAddressesToSell, setNftTokenAddressesToSell] = useState<string[]>([])
+
+  const handleListToken = async () => {
+    if (program && connection && wallet?.publicKey && selectedToken) {
+      const transactions = await Promise.all(nftTokenAddressesToSell.map(async (tokenAddress) => {
+        const transaction = await createSellTransaction(
+          connection,
+          program,
+          wallet?.publicKey,
+          new PublicKey(tokenAddress),
+          1,
+          price * LAMPORTS_PER_SOL
+        );
+      }))
+      const transaction = await createSellTransaction(
+        connection,
+        program,
+        wallet?.publicKey,
+        new PublicKey(selectedToken),
+        tokenAmount,
+        price * LAMPORTS_PER_SOL
+      );
+    }
+  }
 
   const handleSell = async () => {
     if (program && connection && wallet?.publicKey && selectedToken) {
@@ -90,23 +94,30 @@ function ListTokenModal(
 
   }
 
-  let nftTokenAddressToSell: string[] = [];
-
   const handleSelect = (tokenAddress: string) => {
-    if (nftTokenAddressToSell.includes(tokenAddress)) {
-      nftTokenAddressToSell = nftTokenAddressToSell.filter(
+    let nftTokenAddressesToSell_ = [...nftTokenAddressesToSell];
+    if (nftTokenAddressesToSell_.includes(tokenAddress)) {
+      nftTokenAddressesToSell_ = nftTokenAddressesToSell_.filter(
         item => item !== tokenAddress
       );
-
-      return
+    } else {
+      nftTokenAddressesToSell_.push(tokenAddress);
     }
-    
-    nftTokenAddressToSell.push(tokenAddress);
+    setNftTokenAddressesToSell([...nftTokenAddressesToSell_])
   }
+
+  useEffect(() => {
+    console.log(nftTokenAddressesToSell)
+  }, [nftTokenAddressesToSell])
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={
+        () => {
+          onClose();
+          setNftTokenAddressesToSell([])
+        }
+      }>
         <ModalOverlay />
         <ModalContent
           alignSelf={"center"}
@@ -135,7 +146,7 @@ function ListTokenModal(
                 return (
                   <TokenCard
                     tokenObj={item}
-                    handleOnClick={() => {handleSelect(item.tokenAddress)}}
+                    handleOnClick={() => { handleSelect(item.tokenAddress) }}
                   />
                 )
               })}
@@ -143,10 +154,19 @@ function ListTokenModal(
             </SimpleGrid>
           </ModalBody>
           <ModalFooter>
-            Test
+
+            < Center width={"100%"}>
+              <Button
+                width={"25%"}
+                isDisabled={nftTokenAddressesToSell.length === 0}
+                onClick={() => { }}>
+                NEXT
+              </Button>
+            </Center>
+
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal >
     </>
   )
 }
