@@ -1,4 +1,4 @@
-import { Box, Image, Text } from "@chakra-ui/react"
+import { Box, Image, Link, Text } from "@chakra-ui/react"
 import { UserTokenType } from "../../utils/web3"
 import { shortenHash } from "../../utils"
 import { useState } from "react"
@@ -21,16 +21,24 @@ function TokenCard({
             border={isActive ? "2px" : "0px"}
             display={"flex"}
             flexDir={"column"}
-            onClick={() => { 
-                setActive(!isActive);
-                if (handleOnClick) {
-                    handleOnClick()
-                }
-             }}
         >
-            <Text>{shortenHash(tokenObj.name ? tokenObj.name : "unknown token", 7)}</Text>
+            <Text>
+                <Link
+                    href={`https://explorer.solana.com/address/${tokenObj.tokenAddress}?cluster=devnet`}
+                    target="_blank"
+                >
+                    {shortenHash(tokenObj.name ? tokenObj.name : "unknown token", 7)}
+                </Link>
+            </Text>
             <Image
+                cursor={"pointer"}
                 src={tokenObj.imageUrl ? tokenObj.imageUrl : "./solana_logo.png"}
+                onClick={() => {
+                    setActive(!isActive);
+                    if (handleOnClick) {
+                        handleOnClick()
+                    }
+                }}
             />
         </Box>
     )
