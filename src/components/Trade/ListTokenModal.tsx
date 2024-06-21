@@ -24,6 +24,7 @@ import { useProgramData } from '../../stores/useProgramData';
 import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
 import { useLoading } from '../../stores/useLoading';
 import TokenCard from './TokenCard';
+import { UserTokenType } from '../../utils/web3';
 
 interface PropType {
   isOpen: boolean,
@@ -31,81 +32,37 @@ interface PropType {
   onClose: () => void,
 }
 
+export interface AvailableNft extends UserTokenType {
+  selected: boolean
+}
+
 function ListTokenModal(
   { isOpen, onClose }: PropType
 ) {
   const { userTokens, connection, program } = useWeb3();
-  const [selectedToken, setSelectedToken] = useState<string | null>(null);
-  const [price, setPrice] = useState<number>(0);
-  const [tokenAmount, setTokenAmount] = useState<number>(0);
   const wallet = useAnchorWallet();
   const { setAllSellEscrowInfo } = useProgramData();
   const { setLoading } = useLoading();
   const [nftTokenAddressesToSell, setNftTokenAddressesToSell] = useState<string[]>([])
+  const [availableNfts, setAvailableNfts] = useState<AvailableNft[]>([]);
 
-  const handleListToken = async () => {
-    if (program && connection && wallet?.publicKey && selectedToken) {
-      const transactions = await Promise.all(nftTokenAddressesToSell.map(async (tokenAddress) => {
-        const transaction = await createSellTransaction(
-          connection,
-          program,
-          wallet?.publicKey,
-          new PublicKey(tokenAddress),
-          1,
-          price * LAMPORTS_PER_SOL
-        );
-      }))
-      const transaction = await createSellTransaction(
-        connection,
-        program,
-        wallet?.publicKey,
-        new PublicKey(selectedToken),
-        tokenAmount,
-        price * LAMPORTS_PER_SOL
-      );
-    }
-  }
+  useEffect(() => {
+    const data = userTokens.map((item) => {
+      return {...item, selected: false}
+    });
 
-  const handleSell = async () => {
-    if (program && connection && wallet?.publicKey && selectedToken) {
-
-      const transaction = await createSellTransaction(
-        connection,
-        program,
-        wallet?.publicKey,
-        new PublicKey(selectedToken),
-        tokenAmount,
-        price * LAMPORTS_PER_SOL
-      );
-
-      transaction.feePayer = wallet.publicKey;
-      transaction.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
-
-      const signedTx = await wallet.signTransaction(transaction);
-      const wireTx = signedTx.serialize();
-      const signature = await connection.sendRawTransaction(wireTx, { skipPreflight: true });
-      console.log(signature);
-      setLoading(true);
-      await connection.confirmTransaction(signature, "finalized");
-      const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);
-      setAllSellEscrowInfo(dataArrSE);
-      setLoading(false);
-      onClose();
-
-    }
-
-  }
+    setAvailableNfts(data);
+  }, [userTokens])
 
   const handleSelect = (tokenAddress: string) => {
-    let nftTokenAddressesToSell_ = [...nftTokenAddressesToSell];
-    if (nftTokenAddressesToSell_.includes(tokenAddress)) {
-      nftTokenAddressesToSell_ = nftTokenAddressesToSell_.filter(
-        item => item !== tokenAddress
-      );
-    } else {
-      nftTokenAddressesToSell_.push(tokenAddress);
-    }
-    setNftTokenAddressesToSell([...nftTokenAddressesToSell_])
+    const updatedList = availableNfts.map((item) => {
+      if (item.tokenAddress === tokenAddress) {
+        return {...item, selected: !item.selected}
+      }
+      return item
+    });
+
+    setAvailableNfts(updatedList)
   }
 
   useEffect(() => {
@@ -164,9 +121,10 @@ function ListTokenModal(
               overflowY={"scroll"}
               maxHeight={"512px"}
             >
-              {userTokens.map((item) => {
+              {availableNfts.map((item) => {
                 return (
                   <TokenCard
+                    key={item.tokenAddress}
                     tokenObj={item}
                     handleOnClick={() => { handleSelect(item.tokenAddress) }}
                   />
@@ -180,7 +138,7 @@ function ListTokenModal(
             < Center width={"100%"}>
               <Button
                 width={"25%"}
-                isDisabled={nftTokenAddressesToSell.length === 0}
+                isDisabled={availableNfts.filter(item => item.selected).length === 0}
                 onClick={() => { }}>
                 NEXT
               </Button>

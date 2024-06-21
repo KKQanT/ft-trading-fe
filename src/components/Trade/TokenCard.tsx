@@ -2,9 +2,10 @@ import { Box, Image, Link, Text } from "@chakra-ui/react"
 import { UserTokenType } from "../../utils/web3"
 import { shortenHash } from "../../utils"
 import { useState } from "react"
+import { AvailableNft } from "./ListTokenModal";
 
 interface PropType {
-    tokenObj: UserTokenType,
+    tokenObj: AvailableNft,
     handleOnClick?: () => void;
 }
 
@@ -13,12 +14,10 @@ function TokenCard({
     handleOnClick
 }: PropType) {
 
-    const [isActive, setActive] = useState<boolean>(false);
-
     return (
         <Box
             id={tokenObj.tokenAddress}
-            border={isActive ? "2px" : "0px"}
+            border={tokenObj.selected ? "2px" : "0px"}
             display={"flex"}
             flexDir={"column"}
         >
@@ -34,7 +33,6 @@ function TokenCard({
                 cursor={"pointer"}
                 src={tokenObj.imageUrl ? tokenObj.imageUrl : "./solana_logo.png"}
                 onClick={() => {
-                    setActive(!isActive);
                     if (handleOnClick) {
                         handleOnClick()
                     }
