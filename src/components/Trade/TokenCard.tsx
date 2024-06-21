@@ -1,4 +1,4 @@
-import { Box, Image, Link, Text } from "@chakra-ui/react"
+import { Box, Image, Link, Text, Center } from "@chakra-ui/react"
 import { UserTokenType } from "../../utils/web3"
 import { shortenHash } from "../../utils"
 import { useState } from "react"
@@ -17,10 +17,10 @@ function TokenCard({
     return (
         <Box
             id={tokenObj.tokenAddress}
-            border={tokenObj.selected ? "2px" : "0px"}
             display={"flex"}
             flexDir={"column"}
         >
+            
             <Text>
                 <Link
                     href={`https://explorer.solana.com/address/${tokenObj.tokenAddress}?cluster=devnet`}
@@ -37,6 +37,7 @@ function TokenCard({
                         handleOnClick()
                     }
                 }}
+                opacity={tokenObj.selected ? 0.5 : 1}
             />
         </Box>
     )
