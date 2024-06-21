@@ -1,7 +1,5 @@
 import { Box, Image, Link, Text, Center } from "@chakra-ui/react"
-import { UserTokenType } from "../../utils/web3"
 import { shortenHash } from "../../utils"
-import { useState } from "react"
 import { AvailableNft } from "./ListTokenModal";
 
 interface PropType {

@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useWeb3 } from '../../stores/useWeb3';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createSellTransaction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
@@ -48,7 +48,7 @@ function ListTokenModal(
 
   useEffect(() => {
     const data = userTokens.map((item) => {
-      return {...item, selected: false}
+      return { ...item, selected: false }
     });
 
     setAvailableNfts(data);
@@ -57,7 +57,7 @@ function ListTokenModal(
   const handleSelect = (tokenAddress: string) => {
     const updatedList = availableNfts.map((item) => {
       if (item.tokenAddress === tokenAddress) {
-        return {...item, selected: !item.selected}
+        return { ...item, selected: !item.selected }
       }
       return item
     });
@@ -69,7 +69,13 @@ function ListTokenModal(
     console.log(nftTokenAddressesToSell)
   }, [nftTokenAddressesToSell])
 
-  
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const updatedList = availableNfts.map((item) => {
+      return { ...item, selected: event.target.checked }
+    });
+    setAvailableNfts(updatedList)
+  }
 
   return (
     <>
@@ -107,9 +113,10 @@ function ListTokenModal(
                 >
                   Select All
                 </Text>
-                <Switch 
-                margin={"auto"}
-                colorScheme='orange'
+                <Switch
+                  margin={"auto"}
+                  colorScheme='orange'
+                  onChange={handleSelectAll}
                 />
               </Flex>
             </Flex>
