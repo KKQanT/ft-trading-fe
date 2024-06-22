@@ -12,6 +12,14 @@ import {
   Center,
   Flex,
   Switch,
+  Box,
+  Image,
+  Input,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 
 } from '@chakra-ui/react'
 
@@ -25,6 +33,7 @@ import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
 import { useLoading } from '../../stores/useLoading';
 import TokenCard from './TokenCard';
 import { UserTokenType } from '../../utils/web3';
+import { shortenHash } from '../../utils';
 
 interface PropType {
   isOpen: boolean,
@@ -34,6 +43,12 @@ interface PropType {
 
 export interface AvailableNft extends UserTokenType {
   selected: boolean
+  price: number
+}
+
+enum Step {
+  SelectToken,
+  SelectPrice
 }
 
 function ListTokenModal(
@@ -43,31 +58,36 @@ function ListTokenModal(
   const wallet = useAnchorWallet();
   const { setAllSellEscrowInfo } = useProgramData();
   const { setLoading } = useLoading();
-  const [nftTokenAddressesToSell, setNftTokenAddressesToSell] = useState<string[]>([])
   const [availableNfts, setAvailableNfts] = useState<AvailableNft[]>([]);
+  const [step, setStep] = useState<Step>(Step.SelectToken)
+
+  const resetAvailableNfts = () => {
+    const data = userTokens.map((item) => {
+      return { ...item, selected: false, price: 0 }
+    });
+    setAvailableNfts(data);
+  }
 
   useEffect(() => {
-    const data = userTokens.map((item) => {
-      return { ...item, selected: false }
-    });
-
-    setAvailableNfts(data);
+    resetAvailableNfts()
   }, [userTokens])
+
+
+
+  useEffect(() => {
+    console.log('availableNfts: ', availableNfts)
+  }, [availableNfts])
 
   const handleSelect = (tokenAddress: string) => {
     const updatedList = availableNfts.map((item) => {
       if (item.tokenAddress === tokenAddress) {
-        return { ...item, selected: !item.selected }
+        return { ...item, selected: !item.selected, price: 0 }
       }
       return item
     });
 
     setAvailableNfts(updatedList)
   }
-
-  useEffect(() => {
-    console.log(nftTokenAddressesToSell)
-  }, [nftTokenAddressesToSell])
 
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -77,14 +97,34 @@ function ListTokenModal(
     setAvailableNfts(updatedList)
   }
 
+  const setPrice = (
+    numberInput: string,
+    tokenAddress: string
+  ) => {
+    const updatedList = availableNfts.map((item) => {
+      if (item.tokenAddress === tokenAddress) {
+        return { ...item, price: parseFloat(numberInput) }
+      }
+      return item
+    });
+    setAvailableNfts(updatedList)
+  }
+
+  const handleSellItems = () => {
+    console.log('sell items: ', availableNfts.map((item) => {
+      return item.price
+    }))
+
+  }
+
+  const handleCloseListTokenModel = () => {
+    onClose();
+    resetAvailableNfts();
+  }
+
   return (
     <>
-      <Modal isOpen={isOpen} onClose={
-        () => {
-          onClose();
-          setNftTokenAddressesToSell([])
-        }
-      }>
+      <Modal isOpen={isOpen} onClose={handleCloseListTokenModel}>
         <ModalOverlay />
         <ModalContent
           alignSelf={"center"}
@@ -100,56 +140,151 @@ function ListTokenModal(
             </Text>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Flex
-              justifyContent={"flex-end"}
-            >
+          {step == Step.SelectToken && (
+            <ModalBody>
               <Flex
-                justifyContent={"space-between"}
-                marginBottom={"16px"}
+                justifyContent={"flex-end"}
               >
-                <Text
-                  marginRight={"8px"}
+                <Flex
+                  justifyContent={"space-between"}
+                  marginBottom={"16px"}
                 >
-                  Select All
-                </Text>
-                <Switch
-                  margin={"auto"}
-                  colorScheme='orange'
-                  onChange={handleSelectAll}
-                />
-              </Flex>
-            </Flex>
-            <SimpleGrid
-              minChildWidth="128px"
-              spacing="28px"
-              alignItems="center"
-              justifyContent="center"
-              overflowY={"scroll"}
-              maxHeight={"512px"}
-            >
-              {availableNfts.map((item) => {
-                return (
-                  <TokenCard
-                    key={item.tokenAddress}
-                    tokenObj={item}
-                    handleOnClick={() => { handleSelect(item.tokenAddress) }}
+                  <Text
+                    marginRight={"8px"}
+                  >
+                    Select All
+                  </Text>
+                  <Switch
+                    margin={"auto"}
+                    colorScheme='orange'
+                    onChange={handleSelectAll}
                   />
-                )
-              })}
+                </Flex>
+              </Flex>
+              <SimpleGrid
+                minChildWidth="128px"
+                spacing="28px"
+                alignItems="center"
+                justifyContent="center"
+                overflowY={"scroll"}
+                maxHeight={"512px"}
+              >
+                {availableNfts.map((item) => {
+                  return (
+                    <TokenCard
+                      key={item.tokenAddress}
+                      tokenObj={item}
+                      handleOnClick={() => { handleSelect(item.tokenAddress) }}
+                    />
+                  )
+                })}
 
-            </SimpleGrid>
-          </ModalBody>
+              </SimpleGrid>
+            </ModalBody>)
+          }
+          {step == Step.SelectPrice && (
+            <ModalBody>
+              <SimpleGrid
+                columns={1}
+                spacingY='28px'
+                overflowY={"scroll"}
+                maxHeight={"512px"}
+              >
+                {availableNfts.filter((item) => (item.selected)).map((item) => {
+                  return (
+                    <Flex
+                      maxHeight={"128px"}
+                      flexDir={"column"}
+                      justifyContent={"space-between"}
+                      padding={"16px"}
+                      key={item.tokenAddress}
+                    >
+
+                      <Flex
+                        maxHeight={"128px"}
+                        maxWidth={"100%"}
+                        flexDir={"row"}
+                        justifyContent={"space-between"}
+                      >
+
+                        <Image
+                          src={item.imageUrl ? item.imageUrl : "./solana_logo.png"}
+                          maxWidth={"96px"}
+
+                        />
+                        <Flex flexDir={"column"}>
+                          <Flex>
+                            <Text width={"100%"} textAlign={"start"}>
+                              {shortenHash(item.name!, 7)}
+                            </Text>
+                          </Flex>
+                          <Flex>
+                            <Text width={"100%"} textAlign={"start"}>
+                              {shortenHash(item.tokenAddress!, 5)}
+                            </Text>
+                          </Flex>
+                        </Flex>
+
+                        <Flex
+                          width={"40%"}
+                          flexDir={"column"}
+                        >
+                          <Flex
+                            justifyContent={"flex-end"}>
+                            Price (SOL)
+                          </Flex>
+                          <NumberInput
+                            alignSelf={"flex-end"}
+                            bg={"gray"}
+                            border={"none"}
+                            height={"32px"}
+                            width={"128px"}
+                            defaultValue={0}
+                            onChange={(numberInput) => setPrice(numberInput, item.tokenAddress)}
+                            min={0}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper color={"white"} />
+                              <NumberDecrementStepper color={"white"} />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </Flex>
+
+                      </Flex>
+
+                    </Flex>
+                  )
+                })}
+              </SimpleGrid>
+            </ModalBody>)
+          }
           <ModalFooter>
 
-            < Center width={"100%"}>
-              <Button
-                width={"25%"}
-                isDisabled={availableNfts.filter(item => item.selected).length === 0}
-                onClick={() => { }}>
-                NEXT
-              </Button>
-            </Center>
+            {(step == Step.SelectToken) &&
+              (< Center width={"100%"}>
+                <Button
+                  width={"25%"}
+                  isDisabled={availableNfts.filter(item => item.selected).length === 0}
+                  onClick={() => { setStep(Step.SelectPrice) }}>
+                  NEXT
+                </Button>
+              </Center>)
+            }
+
+            {(step == Step.SelectPrice) && (
+              < Center width={"100%"}>
+                <Button
+                  width={"25%"}
+                  isDisabled={availableNfts.filter(
+                    (item => ((item.selected) && (item.price == 0)))
+                  ).length > 0}
+                  onClick={handleSellItems}
+                >
+                  LIST
+                </Button>
+              </Center>
+            )}
 
           </ModalFooter>
         </ModalContent>
