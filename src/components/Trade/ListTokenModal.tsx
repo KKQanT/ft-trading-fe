@@ -264,7 +264,7 @@ function ListTokenModal(
             {(step == Step.SelectToken) &&
               (< Center width={"100%"}>
                 <Button
-                  width={"25%"}
+                  width={"128px"}
                   isDisabled={availableNfts.filter(item => item.selected).length === 0}
                   onClick={() => { setStep(Step.SelectPrice) }}>
                   NEXT
@@ -274,15 +274,25 @@ function ListTokenModal(
 
             {(step == Step.SelectPrice) && (
               < Center width={"100%"}>
-                <Button
-                  width={"25%"}
-                  isDisabled={availableNfts.filter(
-                    (item => ((item.selected) && (item.price == 0)))
-                  ).length > 0}
-                  onClick={handleSellItems}
-                >
-                  LIST
-                </Button>
+                <Flex
+                  width={"288px"}
+                  justifyContent={"space-between"}>
+                  <Button
+                    width={"128px"}
+                    onClick={() => {setStep(Step.SelectToken)}}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    width={"128px"}
+                    isDisabled={availableNfts.filter(
+                      (item => ((item.selected) && (item.price == 0)))
+                    ).length > 0}
+                    onClick={handleSellItems}
+                  >
+                    LIST
+                  </Button>
+                </Flex>
               </Center>
             )}
 
