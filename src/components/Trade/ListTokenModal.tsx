@@ -27,12 +27,12 @@ import { useWeb3 } from '../../stores/useWeb3';
 import React, { useEffect, useState } from "react";
 import { createSellTransaction } from '../../smart-contract/intructions';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, PublicKey, Transaction } from '@solana/web3.js';
 import { useProgramData } from '../../stores/useProgramData';
 import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
 import { useLoading } from '../../stores/useLoading';
 import TokenCard from './TokenCard';
-import { UserTokenType } from '../../utils/web3';
+import { UserTokenType, signAndSendBulkTransactions } from '../../utils/web3';
 import { shortenHash } from '../../utils';
 
 interface PropType {
@@ -110,10 +110,36 @@ function ListTokenModal(
     setAvailableNfts(updatedList)
   }
 
-  const handleSellItems = () => {
+  const handleSellItems = async () => {
+
     console.log('sell items: ', availableNfts.map((item) => {
       return item.price
     }))
+
+
+
+    if (program && connection && wallet?.publicKey) {
+      const transactions: Transaction[] = []
+      await Promise.all(availableNfts
+        .filter((item) => item.selected)
+        .map(async (item) => {
+        const transaction = await createSellTransaction(
+          connection,
+          program,
+          wallet?.publicKey,
+          new PublicKey(item.tokenAddress),
+          1,
+          item.price * LAMPORTS_PER_SOL
+        );
+        transactions.push(transaction);
+      }));
+      const signatures = await signAndSendBulkTransactions(
+        transactions,
+        wallet,
+        connection
+      );
+      console.log(signatures)
+    }
 
   }
 

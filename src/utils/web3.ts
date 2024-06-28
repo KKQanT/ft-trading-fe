@@ -2,6 +2,7 @@ import { PublicKey, Connection, Keypair, Transaction, SystemProgram } from "@sol
 import { MintLayout, TOKEN_PROGRAM_ID, createAssociatedTokenAccountInstruction, createInitializeMintInstruction, createMintToInstruction, getAssociatedTokenAddress, getMinimumBalanceForRentExemptMint } from "@solana/spl-token";
 import { Metadata, createCreateMetadataAccountV3Instruction, createUpdateMetadataAccountV2Instruction } from "@metaplex-foundation/mpl-token-metadata";
 import { GetProgramAccountsFilter } from "@solana/web3.js";
+import { AnchorWallet } from "@solana/wallet-adapter-react";
 
 export const START_TS = 1717861000
 export const EPOCH_DURATION = 86400 * 30
@@ -256,4 +257,39 @@ export async function getNFTOnchainMetadata(
   } catch (err) {
     return null
   }
+}
+
+export const signAndSendBulkTransactions = async (
+  transactions: Transaction[],
+  signerWallet: AnchorWallet,
+  connection: Connection,
+) => {
+  const recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
+  for (const transaction of transactions) {
+    transaction.feePayer = signerWallet.publicKey;
+    transaction.recentBlockhash = recentBlockhash
+  }
+  const signedTransactions = await signerWallet.signAllTransactions(transactions);
+  const wireTxs = signedTransactions.map((item) => item.serialize());
+  const signatures: string[] = []
+  await Promise.all(wireTxs.map(async (wireTx) => {
+    const signature = await connection.sendRawTransaction(wireTx, {skipPreflight: true});
+    signatures.push(signature)
+  }));
+  return signatures
+}
+
+export const signAndSendTransaction = async (
+  transaction: Transaction,
+  signerWallet: AnchorWallet,
+  connection: Connection,
+) => {
+  transaction.feePayer = signerWallet.publicKey;
+  transaction.recentBlockhash = (
+    await connection.getRecentBlockhash("max"))
+    .blockhash;
+  const signedTransaction = await signerWallet.signTransaction?.(transaction);
+  const wireTx = signedTransaction.serialize();
+  const signature = await connection.sendRawTransaction(wireTx, { skipPreflight: true });
+  return signature
 }
