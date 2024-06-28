@@ -259,6 +259,12 @@ export async function getNFTOnchainMetadata(
   }
 }
 
+export interface TransactionWithIds {
+  itemId: string,
+  transaction: Transaction,
+
+}
+
 export const signAndSendBulkTransactions = async (
   transactions: Transaction[],
   signerWallet: AnchorWallet,

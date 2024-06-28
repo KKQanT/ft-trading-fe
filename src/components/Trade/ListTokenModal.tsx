@@ -112,14 +112,10 @@ function ListTokenModal(
 
   const handleSellItems = async () => {
 
-    console.log('sell items: ', availableNfts.map((item) => {
-      return item.price
-    }))
-
-
-
     if (program && connection && wallet?.publicKey) {
+      
       const transactions: Transaction[] = []
+      
       await Promise.all(availableNfts
         .filter((item) => item.selected)
         .map(async (item) => {
@@ -133,12 +129,24 @@ function ListTokenModal(
         );
         transactions.push(transaction);
       }));
+      
       const signatures = await signAndSendBulkTransactions(
         transactions,
         wallet,
         connection
       );
-      console.log(signatures)
+      
+      await Promise.all(signatures.map(async (signature) => {
+        await connection.confirmTransaction(signature, "confirmed")
+      }))
+      
+      onClose();
+
+      const updatedList = availableNfts.filter((item) => !item.selected);
+      setAvailableNfts(updatedList);
+
+      setStep(Step.SelectToken);
+      
     }
 
   }
