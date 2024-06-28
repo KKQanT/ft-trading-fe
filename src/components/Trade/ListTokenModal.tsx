@@ -54,7 +54,7 @@ enum Step {
 function ListTokenModal(
   { isOpen, onClose }: PropType
 ) {
-  const { userTokens, connection, program } = useWeb3();
+  const { userTokens, connection, program, setUserTokens } = useWeb3();
   const wallet = useAnchorWallet();
   const { setAllSellEscrowInfo } = useProgramData();
   const { setLoading } = useLoading();
@@ -113,40 +113,49 @@ function ListTokenModal(
   const handleSellItems = async () => {
 
     if (program && connection && wallet?.publicKey) {
-      
+
       const transactions: Transaction[] = []
-      
+
       await Promise.all(availableNfts
         .filter((item) => item.selected)
         .map(async (item) => {
-        const transaction = await createSellTransaction(
-          connection,
-          program,
-          wallet?.publicKey,
-          new PublicKey(item.tokenAddress),
-          1,
-          item.price * LAMPORTS_PER_SOL
-        );
-        transactions.push(transaction);
-      }));
-      
+          const transaction = await createSellTransaction(
+            connection,
+            program,
+            wallet?.publicKey,
+            new PublicKey(item.tokenAddress),
+            1,
+            item.price * LAMPORTS_PER_SOL
+          );
+          transactions.push(transaction);
+        }));
+
       const signatures = await signAndSendBulkTransactions(
         transactions,
         wallet,
         connection
       );
-      
+
       await Promise.all(signatures.map(async (signature) => {
         await connection.confirmTransaction(signature, "confirmed")
       }))
-      
+
       onClose();
 
-      const updatedList = availableNfts.filter((item) => !item.selected);
-      setAvailableNfts(updatedList);
+      const updatedList: UserTokenType[] = availableNfts
+      .filter((item) => !item.selected)
+      .map((item) => {
+        return {
+          tokenAddress: item.tokenAddress,
+          tokenBalance: item.tokenBalance,
+          name: item.name,
+          imageUrl: item.imageUrl
+        }
+      })
+      setUserTokens(updatedList);
 
       setStep(Step.SelectToken);
-      
+
     }
 
   }
@@ -314,7 +323,7 @@ function ListTokenModal(
                   justifyContent={"space-between"}>
                   <Button
                     width={"128px"}
-                    onClick={() => {setStep(Step.SelectToken)}}
+                    onClick={() => { setStep(Step.SelectToken) }}
                   >
                     Back
                   </Button>
