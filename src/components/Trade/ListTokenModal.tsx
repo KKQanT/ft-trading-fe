@@ -60,6 +60,7 @@ function ListTokenModal(
   const { setLoading } = useLoading();
   const [availableNfts, setAvailableNfts] = useState<AvailableNft[]>([]);
   const [step, setStep] = useState<Step>(Step.SelectToken)
+  const [sellButtonLoading, setSellButtonLoading] = useState<boolean>(false);
 
   const resetAvailableNfts = () => {
     const data = userTokens.map((item) => {
@@ -114,47 +115,56 @@ function ListTokenModal(
 
     if (program && connection && wallet?.publicKey) {
 
-      const transactions: Transaction[] = []
+      try {
 
-      await Promise.all(availableNfts
-        .filter((item) => item.selected)
-        .map(async (item) => {
-          const transaction = await createSellTransaction(
-            connection,
-            program,
-            wallet?.publicKey,
-            new PublicKey(item.tokenAddress),
-            1,
-            item.price * LAMPORTS_PER_SOL
-          );
-          transactions.push(transaction);
-        }));
+        setSellButtonLoading(true);
 
-      const signatures = await signAndSendBulkTransactions(
-        transactions,
-        wallet,
-        connection
-      );
+        const transactions: Transaction[] = []
 
-      await Promise.all(signatures.map(async (signature) => {
-        await connection.confirmTransaction(signature, "confirmed")
-      }))
+        await Promise.all(availableNfts
+          .filter((item) => item.selected)
+          .map(async (item) => {
+            const transaction = await createSellTransaction(
+              connection,
+              program,
+              wallet?.publicKey,
+              new PublicKey(item.tokenAddress),
+              1,
+              item.price * LAMPORTS_PER_SOL
+            );
+            transactions.push(transaction);
+          }));
 
-      onClose();
+        const signatures = await signAndSendBulkTransactions(
+          transactions,
+          wallet,
+          connection
+        );
 
-      const updatedList: UserTokenType[] = availableNfts
-      .filter((item) => !item.selected)
-      .map((item) => {
-        return {
-          tokenAddress: item.tokenAddress,
-          tokenBalance: item.tokenBalance,
-          name: item.name,
-          imageUrl: item.imageUrl
-        }
-      })
-      setUserTokens(updatedList);
+        await Promise.all(signatures.map(async (signature) => {
+          await connection.confirmTransaction(signature, "confirmed")
+        }))
 
-      setStep(Step.SelectToken);
+        onClose();
+
+        const updatedList: UserTokenType[] = availableNfts
+          .filter((item) => !item.selected)
+          .map((item) => {
+            return {
+              tokenAddress: item.tokenAddress,
+              tokenBalance: item.tokenBalance,
+              name: item.name,
+              imageUrl: item.imageUrl
+            }
+          })
+        setUserTokens(updatedList);
+
+        setStep(Step.SelectToken);
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setSellButtonLoading(false)
+      }
 
     }
 
@@ -333,6 +343,7 @@ function ListTokenModal(
                       (item => ((item.selected) && (item.price == 0)))
                     ).length > 0}
                     onClick={handleSellItems}
+                    isLoading={sellButtonLoading}
                   >
                     LIST
                   </Button>
