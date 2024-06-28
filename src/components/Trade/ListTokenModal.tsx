@@ -75,7 +75,7 @@ function ListTokenModal(
 
 
   useEffect(() => {
-    console.log('availableNfts: ', availableNfts)
+    console.log('prices: ', availableNfts.map((item) => item.price))
   }, [availableNfts])
 
   const handleSelect = (tokenAddress: string) => {
@@ -120,6 +120,7 @@ function ListTokenModal(
   const handleCloseListTokenModel = () => {
     onClose();
     resetAvailableNfts();
+    setStep(Step.SelectToken);
   }
 
   return (
@@ -239,7 +240,7 @@ function ListTokenModal(
                             border={"none"}
                             height={"32px"}
                             width={"128px"}
-                            defaultValue={0}
+                            defaultValue={item.price}
                             onChange={(numberInput) => setPrice(numberInput, item.tokenAddress)}
                             min={0}
                           >
