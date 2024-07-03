@@ -16,7 +16,6 @@ export default function TradingPage() {
         align={'center'}
         spacing={{ base: 8, md: 10 }}
         py={{ base: 20, md: 28 }}>
-        <TradePageHeader/>
         <TokenListCard/>
       </Stack>
     </Container>

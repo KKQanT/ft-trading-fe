@@ -150,7 +150,6 @@ function WrappedApp() {
   } catch (err) {
     console.log(err)
   }
-
   }
 
   useEffect(() => {
