@@ -25,7 +25,7 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { useLoading } from '../../stores/useLoading';
 import { useProgramData } from '../../stores/useProgramData';
 import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
-import { ListedNFTInfo } from './TokenListCard';
+import { ListedNFTInfo } from './SellingTokensBoard';
 
 interface Props {
   isOpen: boolean,

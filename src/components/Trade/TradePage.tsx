@@ -4,7 +4,7 @@ import {
 } from '@chakra-ui/react'
 
 import Loading from '../Loading/loading'
-import SellingTokenBoard from './TokenListCard'
+import SellingTokensBoard from './SellingTokensBoard'
 
 export default function TradingPage() {
   return (
@@ -15,7 +15,7 @@ export default function TradingPage() {
         align={'center'}
         spacing={{ base: 8, md: 10 }}
         py={{ base: 20, md: 28 }}>
-        <SellingTokenBoard/>
+        <SellingTokensBoard/>
       </Stack>
     </Container>
   )
