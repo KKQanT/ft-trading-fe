@@ -123,7 +123,7 @@ const SellingTokensBoard = () => {
       />
       <Flex
         width={"100%"}
-        height={"512px"}
+        height={"600px"}
         bg={"black"}
         flexDir={"column"}
         borderRadius={"16px"}
@@ -180,6 +180,7 @@ const SellingTokensBoard = () => {
         <Flex flex={24}>
           <SimpleGrid
             columns={5}
+            rowGap={16}
             gap={16}
             spacingY='28px'
             overflowY={"auto"}
