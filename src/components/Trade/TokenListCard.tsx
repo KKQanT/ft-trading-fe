@@ -32,7 +32,7 @@ export interface ListedNFTInfo extends SellerEscrowAccountInfo {
   imageUrl: string
 }
 
-const TokenListCard = () => {
+const SellingTokenBoard = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedNft, setSelectedNft] = useState<ListedNFTInfo>({
@@ -250,4 +250,6 @@ const TokenListCard = () => {
 
 }
 
-export default TokenListCard
+export default SellingTokenBoard
+
+//https://images.prismic.io/contrary-research/aea8f5be-f2c4-4a79-b8e7-ccb1d0341cca_Magic+Eden+2.png?auto=compress%2Cformat&fit=max&w=1920

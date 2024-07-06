@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 
 
-import { TokenInfo } from './TokenListCard';
 import { useState } from "react";
 import { createBuyTransaction } from '../../smart-contract/intructions';
 import { useWeb3 } from '../../stores/useWeb3';
@@ -26,11 +25,12 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { useLoading } from '../../stores/useLoading';
 import { useProgramData } from '../../stores/useProgramData';
 import { getAllSellerEscrowAccountsInfo } from '../../smart-contract/accounts';
+import { ListedNFTInfo } from './TokenListCard';
 
 interface Props {
   isOpen: boolean,
   onClose: () => void,
-  tokenInfo: TokenInfo
+  tokenInfo: ListedNFTInfo
 }
 
 export default function TradeModal(
