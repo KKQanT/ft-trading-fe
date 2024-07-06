@@ -5,17 +5,18 @@ import {
 
 import Loading from '../Loading/loading'
 import SellingTokensBoard from './SellingTokensBoard'
+import ListTokenModal from './ListTokenModal'
 
 export default function TradingPage() {
   return (
     <Container maxW={'5xl'}>
-      <Loading/>
+      <Loading />
       <Stack
         textAlign={'center'}
         align={'center'}
         spacing={{ base: 8, md: 10 }}
         py={{ base: 20, md: 28 }}>
-        <SellingTokensBoard/>
+        <SellingTokensBoard />
       </Stack>
     </Container>
   )

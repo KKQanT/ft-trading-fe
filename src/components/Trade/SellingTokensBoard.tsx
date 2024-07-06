@@ -27,6 +27,7 @@ import { getNFTOnchainMetadata } from '../../utils/web3'
 import TokenCard from './TokenCard';
 import { shortenHash } from '../../utils';
 import SellTokenCard from './SellTokenCard';
+import ListTokenModal from './ListTokenModal';
 
 export interface ListedNFTInfo extends SellerEscrowAccountInfo {
   name: string,
@@ -35,7 +36,7 @@ export interface ListedNFTInfo extends SellerEscrowAccountInfo {
 
 const SellingTokensBoard = () => {
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const listTokenModal = useDisclosure();
   const [selectedNft, setSelectedNft] = useState<ListedNFTInfo>({
     tokenAddress: "",
     pricePerToken: 0,
@@ -55,7 +56,7 @@ const SellingTokensBoard = () => {
   const openTrade = (
     tokenAddress: string,
   ) => {
-    onOpen()
+    //onOpen()
     const selectedToken = listedNFTs.filter((item) => item.tokenAddress === tokenAddress)
     setSelectedNft(selectedToken[0])
   }
@@ -115,6 +116,11 @@ const SellingTokensBoard = () => {
 
   return (
     <>
+      <ListTokenModal 
+        onOpen={listTokenModal.onOpen}
+        isOpen={listTokenModal.isOpen}
+        onClose={listTokenModal.onClose}
+      />
       <Flex
         width={"100%"}
         height={"512px"}
@@ -123,9 +129,9 @@ const SellingTokensBoard = () => {
         borderRadius={"16px"}
       >
         <Flex marginLeft={"16px"}>
-          <Tabs 
-          onChange={(index) => setTabIndex(index)} marginBottom={"4px"}
-          colorScheme='orange'
+          <Tabs
+            onChange={(index) => setTabIndex(index)} marginBottom={"4px"}
+            colorScheme='orange'
           >
             <TabList>
               <Tab>
@@ -165,7 +171,7 @@ const SellingTokensBoard = () => {
               colorScheme={'orange'}
               bg={'orange.400'}
               _hover={{ bg: 'orange.500' }}
-              onClick={onOpen}
+              onClick={listTokenModal.onOpen}
             >
               List Your Token
             </Button>
@@ -185,7 +191,7 @@ const SellingTokensBoard = () => {
               return (
                 <SellTokenCard
                   item={item}
-                  onPurchase={onOpen}
+                  onPurchase={() => {}}
                 />
               )
             })}
