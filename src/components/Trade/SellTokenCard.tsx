@@ -12,18 +12,21 @@ function SellTokenCard({
   item,
   onPurchase
 }: Props) {
+
+  const size = "144px"
+
   return (<Box
     id={item.tokenAddress}
     display={"flex"}
     flexDir={"column"}
-    width={"128px"}
-    height={"128px"}
+    width={size}
+    height={size}
   >
     <Image
       cursor={"pointer"}
       src={item.imageUrl}
-      width={"128px"}
-      height={"128px"}
+      width={size}
+      height={size}
       borderRadius={"8px"}
     />
 

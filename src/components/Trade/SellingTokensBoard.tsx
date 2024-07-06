@@ -180,7 +180,7 @@ const SellingTokensBoard = () => {
         <Flex flex={24}>
           <SimpleGrid
             columns={5}
-            rowGap={16}
+            rowGap={8}
             gap={16}
             spacingY='28px'
             overflowY={"auto"}
