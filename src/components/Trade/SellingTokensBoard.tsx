@@ -123,7 +123,10 @@ const SellingTokensBoard = () => {
         borderRadius={"16px"}
       >
         <Flex marginLeft={"16px"}>
-          <Tabs onChange={(index) => setTabIndex(index)} marginBottom={"4px"}>
+          <Tabs 
+          onChange={(index) => setTabIndex(index)} marginBottom={"4px"}
+          colorScheme='orange'
+          >
             <TabList>
               <Tab>
                 NFTs
