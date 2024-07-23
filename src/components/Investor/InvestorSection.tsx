@@ -34,7 +34,6 @@ const InvestorSection = () => {
     setAllDividendVaultInfos(dataArrDV);
 
     const accounts = await getUserAllShareAccountInfo(connection, wallet!.publicKey);
-    console.log("AllShareAccounts: ", accounts)
     setUserAllShareAccounts(accounts);
     const filtered = accounts.filter((item) => item.epoch == currEpoch);
     if (filtered.length > 0) {

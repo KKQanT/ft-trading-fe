@@ -168,7 +168,6 @@ const SellingTokensBoard = () => {
 
   useEffect(() => {
     if (allSellEscrowInfo.length > 0) {
-      console.log('allSellEscrowInfo: ', allSellEscrowInfo)
       prepareListedNFTs();
     }
   }, [allSellEscrowInfo])

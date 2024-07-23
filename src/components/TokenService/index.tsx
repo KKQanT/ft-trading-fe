@@ -112,7 +112,6 @@ export default function TokenService() {
       const signedTx = await wallet.signTransaction?.(transaction);
       const wireTx = signedTx.serialize();
       const signature = await connection.sendRawTransaction(wireTx);
-      console.log(signature);
     }
   }
 

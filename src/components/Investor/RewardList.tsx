@@ -96,7 +96,6 @@ const RewardList = () => {
       })
       .sort((a, b) => b.epoch - a.epoch);
     setRewardData(prepData);
-    console.log("prepData: ", prepData)
   }, [allDividendVaultInfos, userAllShareAccounts])
 
   return (

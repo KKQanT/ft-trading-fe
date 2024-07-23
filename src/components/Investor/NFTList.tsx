@@ -71,8 +71,6 @@ const NFTList = () => {
       })
     }
 
-    console.log("userWlToken: ", userWlToken)
-
     setPreprocessedTokensData(userWlToken);
 
   }

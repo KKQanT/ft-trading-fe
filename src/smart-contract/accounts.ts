@@ -25,7 +25,6 @@ export const getDividendVaultInfoByEpoch = async (
 
   const accountInfo = await connection.getAccountInfo(dividendVault);
   const decodedData = dividendVaultSchema.decode(accountInfo?.data);
-  console.log(decodedData)
   return {
     address: dividendVault.toBase58(),
     epoch: decodedData.epoch.toNumber(),
@@ -140,7 +139,6 @@ export const getUserShareAccountInfo = async (
     ], S3T_TRADE_PROGRAM_ID
   );
   const accountInfo = await connection.getAccountInfo(userShareAccount);
-  console.log("usershare accountInfo", accountInfo);
   const decodedData = userShareAccountSchema.decode(accountInfo?.data);
 
   return {
@@ -180,8 +178,6 @@ export const getUserAllShareAccountInfo = async (
         nShare: decodedData.n_share as number
       } as userShareAccountType
     });
-
-    console.log(decodedAccounts)
 
     return decodedAccounts as userShareAccountType[]
 
@@ -226,7 +222,6 @@ export const getAllSellerEscrowAccountsInfo = async (
       } as SellerEscrowAccountInfo
     });
 
-    console.log(decodedAccounts)
 
     return decodedAccounts
 

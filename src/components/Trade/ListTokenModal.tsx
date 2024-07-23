@@ -74,11 +74,6 @@ function ListTokenModal(
   }, [userTokens])
 
 
-
-  useEffect(() => {
-    console.log('prices: ', availableNfts.map((item) => item.price))
-  }, [availableNfts])
-
   const handleSelect = (tokenAddress: string) => {
     const updatedList = availableNfts.map((item) => {
       if (item.tokenAddress === tokenAddress) {

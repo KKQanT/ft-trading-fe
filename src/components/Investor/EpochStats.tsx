@@ -33,10 +33,7 @@ const EpochStats = () => {
       const totalNShare_ = currEpochData.totalNShare;
       setTotalIncome(totalIncome_);
       setTotalNumShare(totalNShare_);
-      console.log('run useEffect: ', userShareAccount)
       if (userShareAccount) {
-        console.log('run useEffect userShareAccount')
-
         const userNShare_ = userShareAccount.nShare;
         const userIncome_ = (totalNShare_ == 0) ? 0 : totalIncome_ * (userNShare_ / totalNShare_)
         setUserNumShare(userNShare_);

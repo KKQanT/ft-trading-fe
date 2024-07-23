@@ -38,15 +38,12 @@ function App() {
     if (!hideNewUserModal || (hideNewUserModal == "false")) {
       setShowNewUserModal(true)
     }
-
-    console.log('add hotjar')
     
     Hotjar.init(3792866, 6, {
       debug: true
     });
 
     if (Hotjar.isReady()) {
-      console.log('hot jar ready')
     }
 
 
@@ -102,7 +99,6 @@ function WrappedApp() {
   useEffect(() => {
     getSolanaTime(connection)
       .then((solanaTime) => {
-        console.log('solanaTime: ', solanaTime)
         const epoch = Math.floor((solanaTime! - START_TS) / EPOCH_DURATION);
         setCurrEpoch(epoch);
       })
@@ -145,7 +141,6 @@ function WrappedApp() {
         tokenBalance: item.tokenBalance
       }
     }));
-    console.log('tokensData: ', tokensData)
     setUserTokens(tokensData)
   } catch (err) {
     console.log(err)
@@ -168,7 +163,6 @@ function WrappedApp() {
     setAllWhiteListedTokenInfo(dataArrWL);
 
     const dataArrDV = await getAllDividendVaults(connection);
-    console.log("dataArrDV: ", dataArrDV.sort((a, b) => a.epoch - b.epoch))
     setAllDividendVaultInfos(dataArrDV);
 
     const dataArrSE = await getAllSellerEscrowAccountsInfo(connection);
