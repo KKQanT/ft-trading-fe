@@ -5,7 +5,6 @@ import { shortenHash } from "../../utils"
 interface Props {
   item: ListedNFTInfo,
   onPurchase: () => void
-
 }
 
 function SellTokenCard({
@@ -70,6 +69,7 @@ function SellTokenCard({
         onClick={onPurchase}
         fontSize={"sm"}
         fontWeight={"light"}
+        isLoading={item.isLoading}
       >
         Buy
       </Button>

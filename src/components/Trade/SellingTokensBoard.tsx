@@ -23,15 +23,18 @@ import { SellerEscrowAccountInfo, getAllSellerEscrowAccountsInfo } from '../../s
 import { useWeb3 } from '../../stores/useWeb3'
 import { FaFilter } from 'react-icons/fa';
 import { PublicKey } from '@solana/web3.js'
-import { getNFTOnchainMetadata } from '../../utils/web3'
+import { getNFTOnchainMetadata, signAndSendTransaction } from '../../utils/web3'
 import TokenCard from './TokenCard';
 import { shortenHash } from '../../utils';
 import SellTokenCard from './SellTokenCard';
 import ListTokenModal from './ListTokenModal';
+import { createBuyTransaction } from '../../smart-contract/intructions';
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
 
 export interface ListedNFTInfo extends SellerEscrowAccountInfo {
   name: string,
-  imageUrl: string
+  imageUrl: string,
+  isLoading: boolean
 }
 
 const SellingTokensBoard = () => {
@@ -45,13 +48,14 @@ const SellingTokensBoard = () => {
     name: "",
     imageUrl: "./solana_logo.png",
     address: "",
-    amount: 0
+    amount: 0,
+    isLoading: false
   });
   const [tokenHasSet, setTokenHasSet] = useState<boolean>(false);
   const { allSellEscrowInfo, setAllSellEscrowInfo } = useProgramData()
   const { setLoading } = useLoading();
-  const { connection } = useWeb3();
-  const { userTokens } = useWeb3();
+  const { connection, program, currEpoch } = useWeb3()
+  const wallet = useAnchorWallet();
 
   const openTrade = (
     tokenAddress: string,
@@ -59,6 +63,40 @@ const SellingTokensBoard = () => {
     //onOpen()
     const selectedToken = listedNFTs.filter((item) => item.tokenAddress === tokenAddress)
     setSelectedNft(selectedToken[0])
+  }
+
+  const handlePurchaseNFT = async (tokenInfo: ListedNFTInfo) => {
+    if (program && wallet) {
+      try {
+        const buyTx = await createBuyTransaction(
+          connection,
+          program,
+          new PublicKey(tokenInfo.escrowId),
+          new PublicKey(tokenInfo.seller),
+          wallet.publicKey,
+          new PublicKey(tokenInfo.tokenAddress),
+          1,
+          currEpoch
+        );
+
+        setDisplayNFTItemLoadingStatus(tokenInfo.address, true)
+
+        const signature = await signAndSendTransaction(
+          buyTx,
+          wallet,
+          connection
+        );
+
+        await connection.confirmTransaction(signature, "confirmed");
+
+        removeDisplayNFTItem(tokenInfo.address)
+
+      } catch (err) {
+        console.log(err)
+        setDisplayNFTItemLoadingStatus(tokenInfo.address, true)
+      }
+
+    }
   }
 
   useEffect(() => {
@@ -82,7 +120,7 @@ const SellingTokensBoard = () => {
 
   const prepareListedNFTs = async () => {
     const tokenData: ListedNFTInfo[] =
-      await Promise.all(allSellEscrowInfo.map(async (item) => {
+      await Promise.all(allSellEscrowInfo.filter(item => item.amount > 0).map(async (item) => {
         const onChainMetadata = await getNFTOnchainMetadata(
           new PublicKey(item.tokenAddress),
           connection
@@ -96,27 +134,48 @@ const SellingTokensBoard = () => {
             ...item,
             imageUrl: imageUrl,
             name: onChainMetadata.data.name,
+            isLoading: false
           }
         } else {
           return {
             ...item,
             imageUrl: "./solana_logo.png",
-            name: "Name not available"
+            name: "Name not available",
+            isLoading: false
           }
         }
       }));
     setListedNFTs(tokenData);
   }
 
+  const setDisplayNFTItemLoadingStatus = (
+    escrowAddress: string,
+    loadingStatus: boolean
+  ) => {
+    const listedNFTs_ = [...listedNFTs];
+    listedNFTs_.map((item) => {
+      if (item.address === escrowAddress) {
+        item.isLoading = loadingStatus
+      }
+    });
+    setListedNFTs(listedNFTs_)
+  }
+
+  const removeDisplayNFTItem = (escrowAddress: string) => {
+    const listedNFTs_ = listedNFTs.filter((item) => item.address !== escrowAddress);;
+    setListedNFTs(listedNFTs_)
+  }
+
   useEffect(() => {
     if (allSellEscrowInfo.length > 0) {
+      console.log('allSellEscrowInfo: ', allSellEscrowInfo)
       prepareListedNFTs();
     }
   }, [allSellEscrowInfo])
 
   return (
     <>
-      <ListTokenModal 
+      <ListTokenModal
         onOpen={listTokenModal.onOpen}
         isOpen={listTokenModal.isOpen}
         onClose={listTokenModal.onClose}
@@ -188,11 +247,15 @@ const SellingTokensBoard = () => {
             width={"100%"}
             padding={"32px"}
           >
-            {listedNFTs.map((item) => {
+            {listedNFTs.sort(
+              (a, b) =>
+                (a.address < b.address) ? -1 : (a.address > b.address) ? 1 : 0
+            ).map((item) => {
               return (
                 <SellTokenCard
+                  key={item.address}
                   item={item}
-                  onPurchase={() => {}}
+                  onPurchase={() => { handlePurchaseNFT(item) }}
                 />
               )
             })}

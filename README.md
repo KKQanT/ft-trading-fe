@@ -22,3 +22,4 @@ The website was lived at https://s3t-trade.vercel.app/. If you wished to test it
 
 ## To do
 - improve data loading (all Epoch Dovidend Account)
+- close escrow with 0 tokens for user
